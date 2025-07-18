@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Votre Fiche Checklist Premium</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts - Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         /* Custom styles for Inter font and general body styling */
@@ -15,6 +13,8 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            background: linear-gradient(to bottom right, #F8F8F8, #F0F4F8); /* Softer light mode background */
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         .font-inter {
             font-family: 'Inter', sans-serif;
@@ -50,11 +50,175 @@
             outline: none;
             box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.5); /* focus:ring-purple-500 */
         }
+
+        /* Light Mode Specific Adjustments for cards/sections */
+        .bg-white {
+            background-color: #FCFCFC; /* Slightly off-white for elements */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Default shadow */
+        }
+        .shadow-lg {
+             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Enhanced shadow for sections */
+        }
+        .shadow-md {
+             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Standard shadow */
+        }
+        .shadow-xl { /* New shadow for Boss Tips */
+             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .shadow-2xl { /* Even stronger shadow for Boss Tips */
+             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        .shadow-inner {
+            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06); /* Inner shadow */
+        }
+        .bg-gray-50 {
+            background-color: #F8F8F8; /* Light gray for list items to add nuance */
+        }
+        .hover\:bg-gray-50:hover {
+            background-color: #EFEFEF; /* Slightly darker on hover for contrast */
+        }
+        /* Alternating background for Boss Tips in light mode */
+        .boss-tip-card:nth-child(odd) {
+            background-color: #FDF2F8; /* Light pinkish tone */
+        }
+        .boss-tip-card:nth-child(even) {
+            background-color: #EEF2FF; /* Light bluish tone */
+        }
+
+
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background: #1a202c; /* dark gray */
+            color: #e2e8f0; /* light gray text */
+        }
+        body.dark-mode .bg-white {
+            background-color: #2d3748; /* darker gray for cards */
+            color: #e2e8f0;
+        }
+        body.dark-mode .text-indigo-800 {
+            color: #9f7aea; /* lighter purple for headings */
+        }
+        body.dark-mode .text-purple-700 {
+            color: #b794f4; /* lighter purple */
+        }
+        body.dark-mode .text-gray-700 {
+            color: #cbd5e0; /* lighter gray */
+        }
+        body.dark-mode .text-gray-800 {
+            color: #f7fafc; /* lightest gray */
+        }
+        body.dark-mode .border-indigo-200 {
+            border-color: #4a5568; /* darker border */
+        }
+        body.dark-mode .bg-purple-100 {
+            background-color: #4c51bf; /* darker purple for table header */
+            color: #f7fafc;
+        }
+        /* Correction for hover in dark mode */
+        body.dark-mode .hover\:bg-gray-50:hover {
+            background-color: #4a5568; /* a darker shade for hover */
+            color: #fca5a5; /* light rose color for text on hover */
+        }
+        body.dark-mode .bg-gray-50 {
+            background-color: #4a5568; /* darker gray for checklist items */
+        }
+        body.dark-mode .text-purple-800 {
+            color: #e2e8f0; /* light text on dark purple */
+        }
+        body.dark-mode .bg-purple-50 {
+            background-color: #4a5568; /* darker purple for skill blocks/tips containers */
+        }
+        body.dark-mode .shadow-inner {
+            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.4);
+        }
+        body.dark-mode .shadow-md {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+        }
+        body.dark-mode .shadow-xl { /* New shadow for Boss Tips */
+             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+        body.dark-mode .shadow-2xl { /* Even stronger shadow for Boss Tips */
+             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+        }
+        body.dark-mode .border-purple-400 {
+            border-color: #8b5cf6; /* brighter purple border */
+        }
+        body.dark-mode .border-purple-500 {
+            border-color: #8b5cf6; /* brighter purple border */
+        }
+        body.dark-mode .bg-gradient-to-r {
+            background-image: linear-gradient(to right, #6b46c1, #5a67d8); /* Adjusted gradient for dark mode */
+        }
+        body.dark-mode .bg-indigo-600 {
+            background-color: #6a7ee0; /* adjusted button color */
+        }
+        body.dark-mode .hover\\:bg-indigo-700:hover {
+            background-color: #5a67d8; /* adjusted button hover color */
+        }
+        body.dark-mode .bg-green-500 {
+            background-color: #48bb78; /* adjusted button color */
+        }
+        body.dark-mode .hover\\:bg-green-600:hover {
+            background-color: #38a169; /* adjusted button hover color */
+        }
+        /* Alternating background for Boss Tips in dark mode */
+        .dark-mode .boss-tip-card:nth-child(odd) {
+            background-color: #3c3b52; /* Darker pinkish tone for dark mode */
+        }
+        .dark-mode .boss-tip-card:nth-child(even) {
+            background-color: #323d57; /* Darker bluish tone for dark mode */
+        }
+
+
+        /* Global Progress Bar Styling */
+        .global-progress-bar-container {
+            height: 25px; /* Thicker bar */
+            border-radius: 9999px; /* Fully rounded */
+            background-color: #e2e8f0; /* Light gray track */
+            overflow: hidden; /* Hide overflow from inner bar */
+            position: relative;
+            box-shadow: inset 0 1px 3px 0 rgba(0, 0, 0, 0.1); /* Subtle inner shadow */
+        }
+        .global-progress-bar {
+            height: 100%;
+            border-radius: 9999px;
+            background: linear-gradient(to right, #a78bfa, #6b46c1); /* Purple to Indigo gradient */
+            text-align: center;
+            color: #FECDD6; /* light rose color for text on light background */
+            font-size: 0.875rem; /* text-sm, increased from 0.75rem */
+            font-weight: 500; /* Medium font weight, for readability */
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Center text horizontally */
+            transition: width 0.5s ease-in-out; /* Smooth transition */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* 3D effect shadow */
+            white-space: nowrap; /* Keep text on one line */
+            overflow: hidden; /* Hide overflowing text */
+            text-overflow: ellipsis; /* Add ellipsis if text overflows */
+            padding: 0 0.5rem; /* Add some padding to prevent text touching edges */
+        }
+        body.dark-mode .global-progress-bar-container {
+            background-color: #4a5568; /* Darker track for dark mode */
+            box-shadow: inset 0 1px 3px 0 rgba(0, 0, 0, 0.4);
+        }
+        body.dark-mode .global-progress-bar {
+            background: linear-gradient(to right, #8b5cf6, #6a7ee0); /* Adjusted gradient for dark mode */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+            color: #e2e8f0; /* Light text for dark background */
+        }
     </style>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-purple-100 to-indigo-200 p-4 sm:p-6 lg:p-8">
 
-    <!-- Header Section -->
+    <div class="flex justify-end space-x-4 mb-4">
+        <button id="darkModeToggle" class="bg-gray-700 hover:bg-gray-800 text-white font-semibold py-2 px-4 rounded-full shadow-md transition duration-300 ease-in-out transform hover:scale-105">
+            🌓 Mode Sombre
+        </button>
+        <button id="soundToggle" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-full shadow-md transition duration-300 ease-in-out transform hover:scale-105">
+            🔊 Gérer le Son
+        </button>
+        </div>
+
     <header class="text-center mb-8 bg-white p-6 rounded-xl shadow-lg">
         <h1 class="text-3xl sm:text-4xl font-bold text-indigo-800 mb-2">
             🎉 Votre Fiche Checklist Premium
@@ -63,7 +227,7 @@
             par le <span class="text-orange-500">🔥 Payroll Boss Elite Club 👑</span> !
         </p>
         <p class="text-md sm:text-lg text-gray-700 mb-4">
-            Bienvenue, Future Boss de la Paie ! 🚀 Préparez-vous à conquérir la promotion VINCI (Décembre 2025) avec cette fiche personnalisée qui va faire éclater votre potentiel ! 🌟 Cochez chaque étape et ressentez la puissance de l'organisation ! 💪💖
+            Bienvenue, Future Boss de la Paie ! 🚀 Préparez-vous à atteindre vos objectifs avec cette fiche personnalisée qui va faire éclater votre potentiel ! 🌟 Cochez chaque étape et ressentez la puissance de l'organisation ! 💪💖
         </p>
         <div class="flex flex-wrap justify-center gap-4 text-sm sm:text-base">
             <a
@@ -85,21 +249,50 @@
         </div>
     </header>
 
-    <!-- Countdown Section -->
     <section class="text-center mb-8 bg-white p-6 rounded-xl shadow-lg border-l-4 border-purple-500">
-        <p class="text-2xl sm:text-3xl font-bold text-gray-800">
-            ⏳ J-<span id="days-remaining">0</span> avant la promotion VINCI (27/10/2025) !
+        <div class="mb-4 flex flex-wrap justify-center gap-4">
+            <label class="inline-flex items-center">
+                <input type="radio" class="form-radio text-purple-600 h-5 w-5" name="promotion" value="vinci" id="promoVinci" checked>
+                <span class="ml-2 text-lg font-medium text-gray-700">Promotion VINCI</span>
+            </label>
+            <label class="inline-flex items-center">
+                <input type="radio" class="form-radio text-purple-600 h-5 w-5" name="promotion" value="pasteur" id="promoPasteur">
+                <span class="ml-2 text-lg font-medium text-gray-700">Promotion PASTEUR</span>
+            </label>
+            <label class="inline-flex items-center">
+                <input type="radio" class="form-radio text-purple-600 h-5 w-5" name="promotion" value="copernic" id="promoCopernic">
+                <span class="ml-2 text-lg font-medium text-gray-700">Promotion COPERNIC</span>
+            </label>
+        </div>
+        <div class="mb-4">
+            <label class="inline-flex items-center mr-6">
+                <input type="radio" class="form-radio text-purple-600 h-5 w-5" name="promotionSession" value="session1" id="radioSession1" checked>
+                <span class="ml-2 text-lg font-medium text-gray-700">Session 1</span>
+            </label>
+            <label class="inline-flex items-center">
+                <input type="radio" class="form-radio text-purple-600 h-5 w-5" name="promotionSession" value="session2" id="radioSession2">
+                <span class="ml-2 text-lg font-medium text-gray-700">Session 2</span>
+            </label>
+        </div>
+        <p class="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">
+            ⏳ J-<span id="days-remaining">0</span> avant la <span id="current-promotion-display">Promotion VINCI</span> (<span id="promotion-date">27/10/2025</span>) !
         </p>
-        <p class="text-gray-600 text-sm mt-2">
+        <p class="text-gray-600 text-sm mt-2 mb-4">
             (Note : Ce compte à rebours est dynamique, affichant le nombre de jours restants jusqu'à la promotion.)
         </p>
+
+        <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-2">📊 Moyenne de votre Avancée (Tous Blocs) :</h3>
+        <div id="global-progress-bar-section" class="w-full global-progress-bar-container">
+            <div class="global-progress-bar" style="width: 0%;">
+                0%
+            </div>
+        </div>
     </section>
 
     <main class="max-w-6xl mx-auto">
-        <!-- Academic Checklist Section -->
         <section class="mb-8 bg-white p-6 rounded-xl shadow-lg">
             <h2 class="text-2xl sm:text-3xl font-bold text-indigo-700 mb-6 border-b-2 pb-2 border-indigo-200">
-                ✅ Checklist Académique : Ma Roadmap vers le Succès Vinci ! 🎓
+                ✅ Checklist Académique : Ma Roadmap vers le Succès ! 🎓
             </h2>
             <p class="text-gray-700 mb-4 text-lg">
                 🎯 Toutes les Étapes de votre Roadmap par Session !
@@ -112,42 +305,36 @@
                                 Action
                             </th>
                             <th class="py-3 px-4 text-center text-sm font-semibold text-gray-700 uppercase tracking-wider">
-                                Session 1 (27/10/2025 - 21/11/2025)
+                                Session 1
                             </th>
-                            <th class="py-3 px-4 text-center text-sm font-semibold text-gray-700 uppercase tracking-wider rounded-tr-lg">
-                                Session 2 (13/01/2026 - 30/01/2026)
+                            <th class="py-3 px-4 text-center text-sm font-semibold text-gray-700 uppercase tracking-wider">
+                                Session 2
                             </th>
                         </tr>
                     </thead>
                     <tbody id="academic-checklist-body" class="divide-y divide-gray-200">
-                        <!-- Content will be generated by JavaScript -->
-                    </tbody>
+                        </tbody>
                 </table>
             </div>
         </section>
 
-        <!-- General Preparation Section -->
         <section class="mb-8 bg-white p-6 rounded-xl shadow-lg">
             <h2 class="text-2xl sm:text-3xl font-bold text-indigo-700 mb-6 border-b-2 pb-2 border-indigo-200">
                 🚀 Démarrage & Préparation Générale !
             </h2>
             <div id="general-preparation-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- Content will be generated by JavaScript -->
-            </div>
+                </div>
         </section>
 
-        <!-- Skill Blocks Section -->
         <section class="mb-8 bg-white p-6 rounded-xl shadow-lg">
             <h2 class="text-2xl sm:text-3xl font-bold text-indigo-700 mb-6 border-b-2 pb-2 border-indigo-200">
                 🧠 Maîtrise des Blocs de Compétences !
             </h2>
 
             <div id="skill-blocks-container">
-                <!-- Content will be generated by JavaScript -->
-            </div>
+                </div>
         </section>
 
-        <!-- Well-being Checklist Section -->
         <section class="mb-8 bg-white p-6 rounded-xl shadow-lg">
             <h2 class="text-2xl sm:text-3xl font-bold text-indigo-700 mb-6 border-b-2 pb-2 border-indigo-200">
                 🌟 Checklist Bien-être & Équilibre : La Boss que vous êtes ! 💖
@@ -157,19 +344,15 @@
             </p>
 
             <div id="wellbeing-checklist-container">
-                <!-- Content will be generated by JavaScript -->
-            </div>
+                </div>
         </section>
 
-        <!-- Boss Tips Section -->
-        <section class="mb-8 bg-white p-6 rounded-xl shadow-lg">
+        <section class="mb-8 bg-white p-6 rounded-xl shadow-lg" id="boss-tips-section">
             <h2 class="text-2xl sm:text-3xl font-bold text-indigo-700 mb-6 border-b-2 pb-2 border-indigo-200">
                 💡 Conseils de Boss pour une Préparation au TOP du TOP ! 📈
             </h2>
 
-            <div class="space-y-6">
-                <div class="bg-purple-50 p-4 rounded-xl shadow-inner border-l-4 border-purple-400">
-                    <h3 class="text-xl font-semibold text-purple-800 mb-2">
+            <div class="space-y-12"> <div class="boss-tip-card p-8 rounded-xl shadow-2xl border-l-4 border-purple-400"> <h3 class="text-xl font-semibold text-purple-800 mb-2">
                         🗓️ À 2 mois de l'examen : Le Grand Démarrage ! 🚀
                     </h3>
                     <p class="text-gray-700">
@@ -177,7 +360,7 @@
                     </p>
                 </div>
 
-                <div class="bg-purple-50 p-4 rounded-xl shadow-inner border-l-4 border-purple-400">
+                <div class="boss-tip-card p-8 rounded-xl shadow-2xl border-l-4 border-purple-400">
                     <h3 class="text-xl font-semibold text-purple-800 mb-2">
                         🗓️ À 1 mois de l'examen : L'Accélération Finale ! ⚡
                     </h3>
@@ -186,7 +369,7 @@
                     </p>
                 </div>
 
-                <div class="bg-purple-50 p-4 rounded-xl shadow-inner border-l-4 border-purple-400">
+                <div class="boss-tip-card p-8 rounded-xl shadow-2xl border-l-4 border-purple-400">
                     <h3 class="text-xl font-semibold text-purple-800 mb-2">
                         🗓️ À 1 semaine de l'examen : La Sérénité avant la Tempête ! 🧘‍♀️
                     </h3>
@@ -195,7 +378,7 @@
                     </p>
                 </div>
 
-                <div class="bg-purple-50 p-4 rounded-xl shadow-inner border-l-4 border-purple-400">
+                <div class="boss-tip-card p-8 rounded-xl shadow-2xl border-l-4 border-purple-400">
                     <h3 class="text-xl font-semibold text-purple-800 mb-2">
                         🗓️ 2 jours avant l'examen & le Jour J : La Victoire est en Vue ! 🏆
                     </h3>
@@ -228,11 +411,10 @@
         </section>
     </main>
 
-    <!-- Footer Section -->
     <footer class="text-center mt-8 bg-white p-6 rounded-xl shadow-lg">
         <button
             onclick="window.print()"
-            class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-full shadow-md transition duration-300 ease-in-out transform hover:scale-105 mb-4"
+            class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-6 rounded-full shadow-md transition duration-300 ease-in-out transform hover:scale-105 mb-4"
         >
             🖨️ Imprimer ma Checklist
         </button>
@@ -260,13 +442,11 @@
     </footer>
 
     <script>
-        // Initial state for all checklist items
-        // This structure allows easy tracking of each checkbox and its nested status
         let checklistState = {};
 
         const defaultChecklistState = {
             // Academic Checklist
-            academic: {
+            'academic': {
                 'Préparer son matériel d\'examen (stylos, chargeurs, etc.)': { 'Session 1': false, 'Session 2': false },
                 'Vérifier les modalités spécifiques des épreuves (asynchrone, non-chronométré)': { 'Session 1': false, 'Session 2': false },
                 'S\'assurer de l\'accès à la copie à rendre (cliquer "activer les modifications")': { 'Session 1': false, 'Session 2': false },
@@ -282,7 +462,7 @@
                 'Célébrer sa réussite et se projeter vers la suite !': { 'Session 1': false, 'Session 2': false },
             },
             // General Preparation
-            general: {
+            'general': {
                 'Vérifier son Profil': false,
                 'Réaliser les 3 Certificats Studi (QCM par bloc)': false,
                 'Consulter les différents guides (Formation, Blocs)': false,
@@ -291,7 +471,7 @@
                 'Poser ses questions sur le forum': false,
             },
             // Skill Blocks
-            bloc1: {
+            'bloc1': {
                 'Module 1 : Paramétrer le logiciel de paie': {
                     'Télécharger le logiciel': false,
                     'La base de données 2019': false,
@@ -382,7 +562,7 @@
                     'Synthèse et application : Analyser les écarts entre la paie et la comptabilité': false,
                 },
             },
-            bloc2: {
+            'bloc2': {
                 'Module 1 : Etablir les contrats de travail': {
                     'La notion de droit du travail': false,
                     'La formation du contrat de travail': false,
@@ -430,7 +610,7 @@
                     'Synthèse et application : Communiquer avec les partenaires externes': false,
                 },
             },
-            bloc3: {
+            'bloc3': {
                 'Module 1 : Réaliser une veille juridique': {
                     'Le conseil et l\'assistance à la direction et aux collaborateurs': false,
                     'La démarche de veille': false,
@@ -496,7 +676,7 @@
                 },
             },
             // Well-being Checklist
-            wellbeing: {
+            'wellbeing': {
                 'Moi, ma bulle de bonheur !': {
                     'Prendre un moment pour soi (soin, lecture, méditation, un bon bain moussant !)': false,
                     'Faire une activité physique légère (promenade, yoga, danse endiablée !)': false,
@@ -516,22 +696,135 @@
             },
         };
 
-        // Function to load state from localStorage
-        function loadChecklistState() {
+        const promotionDates = {
+            'vinci': {
+                name: 'Promotion VINCI',
+                session1: {
+                    date: new Date('2025-10-27T11:00:00'),
+                    display: '27/10/2025'
+                },
+                session2: {
+                    date: new Date('2026-01-13T11:00:00'),
+                    display: '13/01/2026'
+                },
+                newsletter: 'https://app.comptalia.com/v3/blog'
+            },
+            'pasteur': {
+                name: 'Promotion PASTEUR',
+                session1: {
+                    date: new Date('2026-05-12T11:00:00'),
+                    display: '12/05/2026'
+                },
+                session2: {
+                    date: new Date('2026-07-07T11:00:00'),
+                    display: '07/07/2026'
+                },
+                newsletter: 'https://app.comptalia.com/v3/blog'
+            },
+            'copernic': {
+                name: 'Promotion COPERNIC',
+                session1: {
+                    date: new Date('2026-10-26T11:00:00'),
+                    display: '26/10/2026'
+                },
+                session2: {
+                    date: new Date('2027-01-12T11:00:00'),
+                    display: '12/01/2027'
+                },
+                newsletter: 'https://app.comptalia.com/v3/blog'
+            }
+        };
+
+        let currentPromotion = 'vinci'; // Default selected promotion
+        let currentSession = 'session1'; // Default selected session
+        let isDarkMode = false;
+        let isSoundMuted = true;
+
+        // Function to play sound using Web Audio API (simple click/tone)
+        let audioContext;
+        let gainNode;
+
+        function playSound() {
+            if (isSoundMuted) return;
+
+            // Initialize AudioContext if not already done
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                gainNode = audioContext.createGain();
+                gainNode.connect(audioContext.destination);
+            }
+
+            // Create an oscillator for the click sound
+            const oscillator = audioContext.createOscillator();
+            oscillator.type = 'sine'; // Sine wave for a clean tone
+            oscillator.frequency.setValueAtTime(440, audioContext.currentTime); // A4 note (440 Hz)
+
+            // Connect oscillator to gain node, and gain node to destination
+            oscillator.connect(gainNode);
+
+            // Start the oscillator
+            oscillator.start(audioContext.currentTime);
+
+            // Stop the sound after a very short duration to make it a click
+            oscillator.stop(audioContext.currentTime + 0.05); // Stop after 50ms
+        }
+
+        // Function to load settings from localStorage
+        function loadSettings() {
             const savedState = localStorage.getItem('payrollChecklistState');
-            if (savedState) {
-                checklistState = JSON.parse(savedState);
-            } else {
-                checklistState = JSON.parse(JSON.stringify(defaultChecklistState)); // Deep copy
+            let loadedState = savedState ? JSON.parse(savedState) : {};
+
+            checklistState = JSON.parse(JSON.stringify(defaultChecklistState));
+
+            // Merge saved state into default state to preserve new additions
+            function mergeStates(target, source) {
+                for (const key in source) {
+                    if (source.hasOwnProperty(key)) {
+                        if (typeof source[key] === 'object' && source[key] !== null && !Array.isArray(source[key])) {
+                            if (!target.hasOwnProperty(key) || typeof target[key] !== 'object' || target[key] === null || Array.isArray(target[key])) {
+                                target[key] = source[key];
+                            } else {
+                                mergeStates(target[key], source[key]);
+                            }
+                        } else {
+                            target[key] = source[key];
+                        }
+                    }
+                }
+            }
+            mergeStates(checklistState, loadedState);
+
+            const savedPromotion = localStorage.getItem('selectedPromotion');
+            const savedSession = localStorage.getItem('selectedSession');
+            const savedDarkMode = localStorage.getItem('darkMode');
+            const savedSoundMuted = localStorage.getItem('soundMuted');
+
+
+            if (savedPromotion && promotionDates[savedPromotion]) {
+                currentPromotion = savedPromotion;
+            }
+            if (savedSession && ['session1', 'session2'].includes(savedSession)) {
+                currentSession = savedSession;
+            }
+
+            if (savedDarkMode !== null) {
+                isDarkMode = JSON.parse(savedDarkMode);
+            }
+            if (savedSoundMuted !== null) {
+                isSoundMuted = JSON.parse(savedSoundMuted);
             }
         }
 
-        // Function to save state to localStorage
-        function saveChecklistState() {
+        // Function to save settings to localStorage
+        function saveSettings() {
             localStorage.setItem('payrollChecklistState', JSON.stringify(checklistState));
+            localStorage.setItem('selectedPromotion', currentPromotion);
+            localStorage.setItem('selectedSession', currentSession);
+            localStorage.setItem('darkMode', JSON.stringify(isDarkMode));
+            localStorage.setItem('soundMuted', JSON.stringify(isSoundMuted));
         }
 
-        // Function to render the checklist
+        // Function to render the checklist and apply settings
         function renderChecklist() {
             // Render Academic Checklist
             const academicBody = document.getElementById('academic-checklist-body');
@@ -609,8 +902,7 @@
                             </svg>
                         </button>
                         <div class="collapsible-content hidden mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <!-- Items will be added here by JS -->
-                        </div>
+                            </div>
                     `;
                     blockDiv.appendChild(moduleDiv);
 
@@ -620,7 +912,7 @@
                         itemDiv.className = 'flex items-center bg-gray-50 p-3 rounded-lg shadow-sm';
                         itemDiv.innerHTML = `
                             <input type="checkbox" id="${blockKey}-${moduleName.replace(/\s/g, '-')}-${item.replace(/\s/g, '-')}" class="form-checkbox h-5 w-5 text-purple-600 rounded focus:ring-purple-500 mr-3"
-                                   data-section="${blockKey}" data-module="${moduleName}" data-item="${item}"
+                                   data-section="bloc${blockIndex + 1}" data-module="${moduleName}" data-item="${item}"
                                    ${checklistState[blockKey][moduleName][item] ? 'checked' : ''}>
                             <label for="${blockKey}-${moduleName.replace(/\s/g, '-')}-${item.replace(/\s/g, '-')}" class="text-gray-800 text-base cursor-pointer">
                                 ${item}
@@ -645,8 +937,7 @@
                         </svg>
                     </button>
                     <div class="collapsible-content hidden mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <!-- Items will be added here by JS -->
-                    </div>
+                        </div>
                 `;
                 wellbeingContainer.appendChild(categoryDiv);
 
@@ -665,6 +956,26 @@
                     contentDiv.appendChild(itemDiv);
                 }
             }
+
+            // Set the correct radio buttons for promotion and session selection
+            document.getElementById(`promo${currentPromotion.charAt(0).toUpperCase() + currentPromotion.slice(1)}`).checked = true;
+            document.getElementById(`radio${currentSession.charAt(0).toUpperCase() + currentSession.slice(1)}`).checked = true;
+
+            // Apply dark mode setting
+            if (isDarkMode) {
+                document.body.classList.add('dark-mode');
+                document.getElementById('darkModeToggle').textContent = '💡 Mode Clair';
+            } else {
+                document.body.classList.remove('dark-mode');
+                document.getElementById('darkModeToggle').textContent = '🌓 Mode Sombre';
+            }
+
+            // Set sound toggle button text
+            document.getElementById('soundToggle').textContent = isSoundMuted ? '🔇 Son Désactivé' : '🔊 Son Activé';
+
+
+            // Update Global Progress Bar
+            updateGlobalProgressBar();
 
             // Attach event listeners after rendering
             attachEventListeners();
@@ -690,6 +1001,33 @@
             return totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
         }
 
+        // Function to calculate and update global progress
+        function updateGlobalProgressBar() {
+            let totalBlocks = 0;
+            let totalPercentage = 0;
+
+            if (checklistState.bloc1) {
+                totalPercentage += calculateBlockProgress('bloc1');
+                totalBlocks++;
+            }
+            if (checklistState.bloc2) {
+                totalPercentage += calculateBlockProgress('bloc2');
+                totalBlocks++;
+            }
+            if (checklistState.bloc3) {
+                totalPercentage += calculateBlockProgress('bloc3');
+                totalBlocks++;
+            }
+
+            const averageProgress = totalBlocks > 0 ? Math.round(totalPercentage / totalBlocks) : 0;
+            const progressBar = document.querySelector('.global-progress-bar');
+            if (progressBar) {
+                progressBar.style.width = `${averageProgress}%`;
+                progressBar.textContent = `${averageProgress}%`; // Only percentage
+            }
+        }
+
+
         // Function to handle checkbox changes
         function handleCheckboxChange(event) {
             const checkbox = event.target;
@@ -708,8 +1046,8 @@
             } else if (section === 'wellbeing') {
                 checklistState[section][category][item] = checkbox.checked;
             }
-
-            saveChecklistState();
+            playSound(); // Play sound on checkbox click
+            saveSettings();
             renderChecklist(); // Re-render to update progress bars and state
         }
 
@@ -721,14 +1059,48 @@
                 checkbox.addEventListener('change', handleCheckboxChange);
             });
 
-            // Collapsible buttons
-            document.querySelectorAll('.collapsible-btn').forEach(button => {
+            // Collapsible buttons for Skill Blocks and Wellbeing
+            document.querySelectorAll('#skill-blocks-container .collapsible-btn, #wellbeing-checklist-container .collapsible-btn').forEach(button => {
                 button.removeEventListener('click', toggleCollapsible); // Prevent duplicate listeners
                 button.addEventListener('click', toggleCollapsible);
             });
+
+            // Radio buttons for promotion selection
+            document.querySelectorAll('input[name="promotion"]').forEach(radio => {
+                radio.removeEventListener('change', handlePromotionChange);
+                radio.addEventListener('change', handlePromotionChange);
+            });
+
+            // Radio buttons for promotion session
+            document.querySelectorAll('input[name="promotionSession"]').forEach(radio => {
+                radio.removeEventListener('change', handleSessionChange);
+                radio.addEventListener('change', handleSessionChange);
+            });
+
+            // Dark Mode Toggle
+            document.getElementById('darkModeToggle').removeEventListener('click', toggleDarkMode);
+            document.getElementById('darkModeToggle').addEventListener('click', toggleDarkMode);
+
+            // Sound Toggle
+            document.getElementById('soundToggle').removeEventListener('click', toggleSound);
+            document.getElementById('soundToggle').addEventListener('click', toggleSound);
         }
 
-        // Function to toggle collapsible sections
+        // Function to handle main promotion change (e.g., Vinci, Pasteur, Copernic)
+        function handlePromotionChange(event) {
+            currentPromotion = event.target.value;
+            saveSettings();
+            updateCountdown(); // Update countdown immediately
+        }
+
+        // Function to handle session change (Session 1 or Session 2)
+        function handleSessionChange(event) {
+            currentSession = event.target.value;
+            saveSettings();
+            updateCountdown(); // Update countdown immediately
+        }
+
+        // Function to toggle collapsible sections for Skill Blocks and Wellbeing
         function toggleCollapsible(event) {
             const button = event.currentTarget;
             const content = button.nextElementSibling; // The div with class 'collapsible-content'
@@ -737,24 +1109,45 @@
             if (content.classList.contains('hidden')) {
                 content.classList.remove('hidden');
                 svg.classList.add('rotate-180');
+                playSound();
             } else {
                 content.classList.add('hidden');
                 svg.classList.remove('rotate-180');
+                playSound();
             }
+        }
+
+        // Dark Mode Toggle Function
+        function toggleDarkMode() {
+            isDarkMode = !isDarkMode;
+            saveSettings();
+            renderChecklist(); // Re-render to apply new styles and update button text
+        }
+
+        // Sound Toggle Function
+        function toggleSound() {
+            isSoundMuted = !isSoundMuted;
+            saveSettings();
+            renderChecklist(); // Re-render to update button text
         }
 
         // Countdown logic
         function updateCountdown() {
-            const targetDate = new Date('2025-10-27T00:00:00'); // Updated target date for VINCI promotion
+            const targetPromotionInfo = promotionDates[currentPromotion];
+            const targetDateInfo = targetPromotionInfo[currentSession];
+            const targetDate = targetDateInfo.date;
             const now = new Date();
             const difference = targetDate.getTime() - now.getTime();
             const days = Math.ceil(difference / (1000 * 60 * 60 * 24));
+
             document.getElementById('days-remaining').textContent = days > 0 ? days : 0;
+            document.getElementById('promotion-date').textContent = targetDateInfo.display;
+            document.getElementById('current-promotion-display').textContent = targetPromotionInfo.name;
         }
 
         // Initial load and setup
         document.addEventListener('DOMContentLoaded', () => {
-            loadChecklistState();
+            loadSettings();
             renderChecklist();
             updateCountdown();
             setInterval(updateCountdown, 1000 * 60 * 60 * 24); // Update daily
