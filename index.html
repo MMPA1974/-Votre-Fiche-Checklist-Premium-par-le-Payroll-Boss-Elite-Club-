@@ -1,672 +1,764 @@
-import React, { useState, useEffect } from 'react';
-
-// Main App component
-const App = () => {
-  // Initial state for all checklist items
-  // This structure allows easy tracking of each checkbox and its nested status
-  const [checklistState, setChecklistState] = useState(() => {
-    // Attempt to load state from localStorage or use default
-    const savedState = localStorage.getItem('payrollChecklistState');
-    return savedState ? JSON.parse(savedState) : {
-      // Academic Checklist
-      academic: {
-        'Préparer son matériel d\'examen (stylos, chargeurs, etc.)': { 'Session 1': false, 'Session 2': false },
-        'Vérifier les modalités spécifiques des épreuves (asynchrone, non-chronométré)': { 'Session 1': false, 'Session 2': false },
-        'S\'assurer de l\'accès à la copie à rendre (cliquer "activer les modifications")': { 'Session 1': false, 'Session 2': false },
-        'Réaliser les épreuves écrites/vidéo': { 'Session 1': false, 'Session 2': false },
-        'Gérer la période "Exam Week / Sprint Examen" (révisions ciblées, questions-réponses)': { 'Session 1': false, 'Session 2': false },
-        'Consulter les Lives Sprint Examen': { 'Session 1': false, 'Session 2': false },
-        'Poser les dernières questions sur le forum/aux responsables pédagogiques': { 'Session 1': false, 'Session 2': false },
-        'Recevoir les résultats de la session': { 'Session 1': false, 'Session 2': false },
-        'Analyser ses résultats et identifier les blocs/épreuves validés': { 'Session 1': false, 'Session 2': false },
-        'Recevoir les bulletins de notes provisoires': { 'Session 1': false, 'Session 2': false },
-        'Confirmer la validation des compétences acquises': { 'Session 1': false, 'Session 2': false },
-        'Recevoir les Parchemins / Attestation de blocs/bulletins finaux par mail': { 'Session 1': false, 'Session 2': false },
-        'Célébrer sa réussite et se projeter vers la suite !': { 'Session 1': false, 'Session 2': false },
-      },
-      // General Preparation
-      general: {
-        'Vérifier son Profil': false,
-        'Réaliser les 3 Certificats Studi (QCM par bloc)': false,
-        'Consulter les différents guides (Formation, Blocs)': false,
-        'S\'assurer d\'avoir bien abordé la formation (guides, lives de bienvenue et de rentrée)': false,
-        'Réaliser toutes les évaluations d\'entraînement (fortement recommandé)': false,
-        'Poser ses questions sur le forum': false,
-      },
-      // Skill Blocks
-      bloc1: {
-        'Module 1 : Paramétrer le logiciel de paie': {
-          'Télécharger le logiciel': false,
-          'La base de données 2019': false,
-          'Lancement de l\'application': false,
-          'Découverte de l\'application': false,
-          'La création d\'une société': false,
-          'Le paramétrage d\'une société': false,
-          'Le paramétrage de l\'établissement': false,
-          'La création des fiches salariés': false,
-          'Le paramétrage des bulletins modèles': false,
-          'Le paramétrage du salaire brut': false,
-          'Le paramétrage des cotisations sociales': false,
-          'Le paramétrage des salaires nets': false,
-          'Les déclarations sociales': false,
-          'Questions fréquentes': false,
-          'L\'Accès à d\'autres logiciels de paie': false,
-          'Synthèse et application : Paramétrer le logiciel de paie': false,
-        },
-        'Module 2 : Collecter et traiter les variables de paie': {
-          'Comment et pourquoi se former à la collecte et au calcul des variables de paie': false,
-          'Présentation de la Gestion de la Paie': false,
-          'La gestion de la paie (pour débutants)': false,
-          'Le temps de travail': false,
-          'La rémunération': false,
-          'La présentation et la méthodologie du bulletin de salaire': false,
-          'Le règlement du salaire': false,
-          'Application : Collecter et traiter les variables de paie': false,
-        },
-        'Module 3 : Gérer la rémunération': {
-          'La présentation et la méthodologie du bulletin de salaire': false,
-          'Le règlement du salaire': false,
-          'La rémunération brute : l\'acquisition et la prise de congés payés': false,
-          'La rémunération brute : l’indemnité de congés payés': false,
-          'La rémunération brute : les heures complémentaires': false,
-          'Présentation de la rémunération brute et de la durée légale du travail': false,
-          'Présentation de la rémunération brute et le temps de travail effectif': false,
-          'La rémunération brute : le salaire de base, les primes et la retenue pour absence': false,
-          'La rémunération brute : les heures supplémentaires et le dimanche travaillé': false,
-          'La rémunération brute : les heures supplémentaires': false,
-          'La rémunération brute : les avantages en nature': false,
-          'La rémunération brute : l’arrêt de travail, la retenue pour absence, la subrogation et les IJSS': false,
-          'La rémunération brute : l’arrêt de travail et le complément employeur': false,
-          'La grève et le lock-out': false,
-        },
-        'Module 4 : Traiter les bulletins de salaires': {
-          'Le bulletin de salaire d\'un dirigeant sans contrat de travail': false,
-          'L\'activité partielle': false,
-          'Le bulletin de salaire VRP': false,
-          'Le bulletin de salaire du BTP (ouvrier)': false,
-          'Le bulletin de salaire du BTP (ETAM et Cadres)': false,
-          'Le bulletin de salaire Apprenti': false,
-          'La gratification stagiaire': false,
-          'Synthèse et application : Collecter et traiter les variables de paie': false,
-        },
-        'Module 5 : Contrôler et éditer les Bulletins de paie': {
-          'Les diverses cotisations sociales': false,
-          'Les bases de calcul des cotisations sociales': false,
-          'Les réductions de cotisations sociales': false,
-          'Les régularisations de cotisations sociales': false,
-          'Le salaire net et le salaire imposable': false,
-          'Les impacts du prélèvement à la source': false,
-          'Le salaire net à payer et le net social': false,
-          'Synthèse et application : Contrôler et éditer les Bulletins de paie': false,
-        },
-        'Module 6 : Gérer les déclarations sociales': {
-          'Comment et pourquoi se former à l\'édition et au contrôle des déclarations sociales': false,
-          'Le livre de paie': false,
-          'Les modalités déclaratives': false,
-          'Le contenu des déclarations sociales : la réduction générale et TEPA': false,
-          'Le contenu des déclarations sociales : les cotisations, le PAS et les contributions sociales': false,
-          'La gestion des arrêts de travail en paie': false,
-          'La taxe d\'apprentissage': false,
-          'La gestion de la déclaration d\'emploi des travailleurs handicapés': false,
-          'Les taxes sur les salaires': false,
-          'La participation à la formation continue': false,
-          'L\'investissement obligatoire dans la construction': false,
-          'Synthèse et application : Gérer les déclarations sociales': false,
-        },
-        'Module 7 : Analyser les écarts entre la paie et la comptabilité': {
-          'Les enjeux de l\'identification et l\'analyse des écarts entre la paie et la comptabilité': false,
-          'La présentation du plan comptable : généralités': false,
-          'Le grand livre comptable et les données paie': false,
-          'Les opérations comptables issues de la paie': false,
-          'Comptabilisation de la paie': false,
-          'L\'analyse des causes': false,
-          'L\'analyse des risques': false,
-          'Les opérations de régularisations': false,
-          'Synthèse et application : Analyser les écarts entre la paie et la comptabilité': false,
-        },
-      },
-      bloc2: {
-        'Module 1 : Etablir les contrats de travail': {
-          'La notion de droit du travail': false,
-          'La formation du contrat de travail': false,
-          'Maîtriser la rédaction d’un contrat de travail': false,
-          'L’exécution du contrat de travail': false,
-          'Le contrat de travail à durée indéterminée': false,
-          'Le CDD et le contrat de travail temporaire': false,
-          'Le contrat de travail à temps partiel': false,
-          'Les contrats de formation': false,
-          'La rédaction du contrat de travail': false,
-          'Synthèse et application : Etablir les contrats de travail': false,
-        },
-        'Module 2 : Traiter les entrées et sorties des salariés': {
-          'Comment et pourquoi se former à gestion des parcours salariés': false,
-          'Le recrutement': false,
-          'Les formalités administratives d\'embauche': false,
-          'La suspension du contrat de travail': false,
-          'L\'édition des documents de suspension du contrat': false,
-          'La rupture du contrat de travail : introduction': false,
-          'Le licenciement': false,
-          'Les autres modes de rupture du contrat de travail': false,
-          'Les fins de contrat : cas du CDD, ICP, Indemnité RTT, ...': false,
-          'Les fins de contrat : rupture conventionnelle, départ et mise à la retraite': false,
-          'Les formalités de rupture du contrat de travail': false,
-          'L\'édition des documents de fin de contrat': false,
-          'Synthèse et application : Traiter les entrées et sorties des salariés': false,
-        },
-        'Module 3 : Gérer les dossiers du personnel': {
-          'La stratégie globale de digitalisation de l\'entreprise': false,
-          'La transition numérique': false,
-          'La digitalisation de la fonction RH': false,
-          'La digitalisation des dossiers du personnel': false,
-          'Le coffre fort numérique': false,
-          'RGPD : Règlement Général de Protection des Données': false,
-          'Synthèse et application : Gérer les dossiers du personnel': false,
-        },
-        'Module 4 : Communiquer avec les partenaires externes': {
-          'Les partenaires externes du service paie': false,
-          'Les outils de communication du service paie avec ses partenaires': false,
-          'Les contrôles de l’application du droit du travail': false,
-          'Le contentieux de la relation de travail': false,
-          'Les procédures de règlement des conflits collectifs': false,
-          'Les contrôles et le contentieux social': false,
-          'Le rôle et le contrôle de l\'URSSAF': false,
-          'Synthèse et application : Communiquer avec les partenaires externes': false,
-        },
-      },
-      bloc3: {
-        'Module 1 : Réaliser une veille juridique': {
-          'Le conseil et l\'assistance à la direction et aux collaborateurs': false,
-          'La démarche de veille': false,
-          'La veille juridique': false,
-          'Les différents types de veille': false,
-          'La notion de droit du travail': false,
-          'Les sources professionnelles du droit du travail': false,
-          'La hiérarchie des sources du droit du travail': false,
-          'La protection sociale, généralités': false,
-          'La formation professionnelle': false,
-          'Les pouvoirs de l’employeur et la protection de la santé des salariés': false,
-          'Comment effectuer une veille active': false,
-          'Le support de communication de la veille juridique': false,
-          'Synthèse et application : Réaliser une veille juridique': false,
-        },
-        'Module 2 : Diagnostiquer le conformité de la paie': {
-          'L\'analyse documentaire': false,
-          'La collecte des informations auprès des décideurs': false,
-          'L\'identification des écarts': false,
-          'L\'identification des risques encourus': false,
-          'Les actions correctrices': false,
-          'Le rapport de diagnostic': false,
-          'Synthèse et application : Diagnostiquer le conformité de la paie': false,
-        },
-        'Module 3 : Communiquer avec les collaborateurs et managers': {
-          'Les fondamentaux de la communication professionnelle': false,
-          'L\'écoute active': false,
-          'La communication non verbale': false,
-          'Les fondamentaux de la prise de parole en public': false,
-          'Les réunions à distances': false,
-          'Rédiger une réponse professionnelle': false,
-          'Les fondamentaux de la sécurité sociale': false,
-          'L’assurance maladie du régime général': false,
-          'L’assurance vieillesse du régime général': false,
-          'La protection contre le chômage': false,
-          'Synthèse et application : Communiquer avec les collaborateurs et managers': false,
-        },
-        'Module 4 : Concevoir des supports de reporting et d’aide à la décision': {
-          'Les fondamentaux d\'excel': false,
-          'Le calcul des effectifs': false,
-          'Le bilan social': false,
-          'Le recueil préalable des informations RH': false,
-          'L\'édition des tableaux de bord sociaux': false,
-          'L\'analyse et le suivi des tableaux de bord sociaux': false,
-          'L\'analyse et la prévision de la masse salariale': false,
-          'L’association des salariés aux performances de l’entreprise, généralités': false,
-          'La participation': false,
-          'L\'intéressement': false,
-          'Les plans d’épargne salariale': false,
-          'Synthèse et application : Concevoir des supports de reporting et d’aide à la décision': false,
-        },
-        'Module 5 : Assister les utilisateurs du SIRH': {
-          'L\'utilisation d\'un SIRH': false,
-          'Les enjeux d\'un SIRH': false,
-          'Les fonctionnalités du SIRH': false,
-          'La réglementation inhérente aux SIRH': false,
-          'Introduction à la notion de base de données': false,
-          'L\'exploitation des bases de données': false,
-          'L\'utilisation du SIRH au quotidien par le collaborateur': false,
-          'Proder Talentsoft ou cornerstone': false,
-          'La rédaction des courriers à destination du personnel': false,
-          'Synthèse et application : Assister les utilisateurs du SIRH': false,
-        },
-      },
-      // Well-being Checklist
-      wellbeing: {
-        'Moi, ma bulle de bonheur !': {
-          'Prendre un moment pour soi (soin, lecture, méditation, un bon bain moussant !)': false,
-          'Faire une activité physique légère (promenade, yoga, danse endiablée !)': false,
-          'S\'accorder une pause "plaisir" (film, musique, hobby, ou juste ne rien faire !)': false,
-          'Déconnecter des écrans au moins 1h avant de dormir (bye bye le téléphone !)': false,
-          'Faire des exercices de respiration ou de pleine conscience (pour une zénitude absolue !)': false,
-        },
-        'Mon corps, mon temple !': {
-          'Préparer des repas équilibrés et ultra-gourmands pour la semaine (miam !)': false,
-          'Dormir au moins 7-8 heures par nuit (le sommeil, c\'est sacré !)': false,
-          'Boire suffisamment d\'eau tout au long de la journée (hydratation = super-pouvoirs !)': false,
-        },
-        'Ma tribu, ma force !': {
-          'Passer du temps de qualité avec la famille/les enfants (rires garantis !)': false,
-          'Organiser une sortie ou un appel avec des amis/partenaire (partage et bonne humeur !)': false,
-        },
-      },
-    };
-  });
-
-  // Save state to localStorage whenever it changes
-  useEffect(() => {
-    localStorage.setItem('payrollChecklistState', JSON.stringify(checklistState));
-  }, [checklistState]);
-
-  // State for countdown
-  const [daysRemaining, setDaysRemaining] = useState(0);
-
-  // Calculate days remaining until VINCI promotion (December 1, 2025)
-  useEffect(() => {
-    const calculateCountdown = () => {
-      const targetDate = new Date('2025-12-01T00:00:00'); // Target date for VINCI promotion
-      const now = new Date();
-      const difference = targetDate.getTime() - now.getTime();
-      const days = Math.ceil(difference / (1000 * 60 * 60 * 24));
-      setDaysRemaining(days > 0 ? days : 0);
-    };
-
-    calculateCountdown();
-    const interval = setInterval(calculateCountdown, 1000 * 60 * 60 * 24); // Update daily
-    return () => clearInterval(interval);
-  }, []);
-
-  // Function to handle checkbox changes
-  const handleCheckboxChange = (section, item, subItem = null) => {
-    setChecklistState(prevState => {
-      const newState = { ...prevState };
-      if (subItem) {
-        newState[section][item] = {
-          ...newState[section][item],
-          [subItem]: !newState[section][item][subItem]
-        };
-      } else if (typeof newState[section][item] === 'boolean') {
-        newState[section][item] = !newState[section][item];
-      } else { // For sections with nested sub-items like 'Moi, ma bulle de bonheur !'
-        newState[section] = {
-          ...newState[section],
-          [item]: {
-            ...newState[section][item],
-            [subItem]: !newState[section][item][subItem]
-          }
-        };
-      }
-      return newState;
-    });
-  };
-
-  // Function to calculate progress for a given block
-  const calculateBlockProgress = (blockKey) => {
-    const block = checklistState[blockKey];
-    if (!block) return 0;
-
-    let totalItems = 0;
-    let completedItems = 0;
-
-    // Iterate through modules in the block
-    for (const moduleName in block) {
-      const moduleItems = block[moduleName];
-      // Iterate through items within each module
-      for (const itemName in moduleItems) {
-        totalItems++;
-        if (moduleItems[itemName]) {
-          completedItems++;
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Votre Fiche Checklist Premium</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles for Inter font and general body styling */
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-      }
-    }
+        .font-inter {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Hide checkbox visually but remain accessible */
+        .form-checkbox {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            height: 20px;
+            width: 20px;
+            border: 2px solid #a78bfa; /* purple-400 */
+            border-radius: 0.25rem; /* rounded */
+            cursor: pointer;
+            display: inline-block;
+            vertical-align: middle;
+            position: relative;
+        }
+        .form-checkbox:checked {
+            background-color: #8b5cf6; /* purple-600 */
+            border-color: #8b5cf6; /* purple-600 */
+        }
+        .form-checkbox:checked::after {
+            content: '✔';
+            color: white;
+            font-size: 14px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .form-checkbox:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.5); /* focus:ring-purple-500 */
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-purple-100 to-indigo-200 p-4 sm:p-6 lg:p-8">
 
-    return totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
-  };
-
-  // Component for collapsible sections (e.g., skill modules, well-being categories)
-  const CollapsibleSection = ({ title, children }) => {
-    const [isOpen, setIsOpen] = useState(false);
-
-    return (
-      <div className="mb-4 bg-white p-4 rounded-xl shadow-md">
-        <button
-          className="w-full text-left font-semibold text-lg flex justify-between items-center text-gray-800 focus:outline-none"
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          {title}
-          <svg
-            className={`w-5 h-5 transform transition-transform duration-200 ${
-              isOpen ? 'rotate-180' : ''
-            }`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-          </svg>
-        </button>
-        {isOpen && <div className="mt-4">{children}</div>}
-      </div>
-    );
-  };
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-100 to-indigo-200 font-inter p-4 sm:p-6 lg:p-8">
-      <script src="https://cdn.tailwindcss.com"></script>
-      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
-
-      {/* Tailwind CSS Configuration for Inter font */}
-      <style>{`
-        body { font-family: 'Inter', sans-serif; }
-        .font-inter { font-family: 'Inter', sans-serif; }
-      `}</style>
-
-      {/* Header Section */}
-      <header className="text-center mb-8 bg-white p-6 rounded-xl shadow-lg">
-        <h1 className="text-3xl sm:text-4xl font-bold text-indigo-800 mb-2">
-          🎉 Votre Fiche Checklist Premium
+    <!-- Header Section -->
+    <header class="text-center mb-8 bg-white p-6 rounded-xl shadow-lg">
+        <h1 class="text-3xl sm:text-4xl font-bold text-indigo-800 mb-2">
+            🎉 Votre Fiche Checklist Premium
         </h1>
-        <p className="text-xl sm:text-2xl text-purple-700 font-semibold mb-4">
-          par le <span className="text-orange-500">🔥 Payroll Boss Elite Club 👑</span> !
+        <p class="text-xl sm:text-2xl text-purple-700 font-semibold mb-4">
+            par le <span class="text-orange-500">🔥 Payroll Boss Elite Club 👑</span> !
         </p>
-        <p className="text-md sm:text-lg text-gray-700 mb-4">
-          Bienvenue, Future Boss de la Paie ! 🚀 Préparez-vous à conquérir la promotion VINCI (Décembre 2025) avec cette fiche personnalisée qui va faire éclater votre potentiel ! 🌟 Cochez chaque étape et ressentez la puissance de l'organisation ! 💪💖
+        <p class="text-md sm:text-lg text-gray-700 mb-4">
+            Bienvenue, Future Boss de la Paie ! 🚀 Préparez-vous à conquérir la promotion VINCI (Décembre 2025) avec cette fiche personnalisée qui va faire éclater votre potentiel ! 🌟 Cochez chaque étape et ressentez la puissance de l'organisation ! 💪💖
         </p>
-        <div className="flex flex-wrap justify-center gap-4 text-sm sm:text-base">
-          <a
-            href="https://discord.com/" // Placeholder link
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-full shadow-md transition duration-300 ease-in-out transform hover:scale-105"
-          >
-            Discord : 🔥Payroll Boss Elite Club 👑| Infos & Actus
-          </a>
-          <a
-            href="https://wa.me/" // Placeholder link
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-full shadow-md transition duration-300 ease-in-out transform hover:scale-105"
-          >
-            WhatsApp : 🔥 Payroll Boss Elite Club : Le Hub Paie & Progrès 📈
-          </a>
+        <div class="flex flex-wrap justify-center gap-4 text-sm sm:text-base">
+            <a
+                href="https://discord.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-full shadow-md transition duration-300 ease-in-out transform hover:scale-105"
+            >
+                Discord : 🔥Payroll Boss Elite Club 👑| Infos & Actus
+            </a>
+            <a
+                href="https://wa.me/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-full shadow-md transition duration-300 ease-in-out transform hover:scale-105"
+            >
+                WhatsApp : 🔥 Payroll Boss Elite Club : Le Hub Paie & Progrès 📈
+            </a>
         </div>
-      </header>
+    </header>
 
-      {/* Countdown Section */}
-      <section className="text-center mb-8 bg-white p-6 rounded-xl shadow-lg border-l-4 border-purple-500">
-        <p className="text-2xl sm:text-3xl font-bold text-gray-800">
-          ⏳ J-{daysRemaining} avant la promotion VINCI (01/12/2025) !
+    <!-- Countdown Section -->
+    <section class="text-center mb-8 bg-white p-6 rounded-xl shadow-lg border-l-4 border-purple-500">
+        <p class="text-2xl sm:text-3xl font-bold text-gray-800">
+            ⏳ J-<span id="days-remaining">0</span> avant la promotion VINCI (01/12/2025) !
         </p>
-        <p className="text-gray-600 text-sm mt-2">
-          (Note : Ce compte à rebours est dynamique, affichant le nombre de jours restants jusqu'à la promotion.)
+        <p class="text-gray-600 text-sm mt-2">
+            (Note : Ce compte à rebours est dynamique, affichant le nombre de jours restants jusqu'à la promotion.)
         </p>
-      </section>
+    </section>
 
-      <main className="max-w-6xl mx-auto">
-        {/* Academic Checklist Section */}
-        <section className="mb-8 bg-white p-6 rounded-xl shadow-lg">
-          <h2 className="text-2xl sm:text-3xl font-bold text-indigo-700 mb-6 border-b-2 pb-2 border-indigo-200">
-            ✅ Checklist Académique : Ma Roadmap vers le Succès Vinci ! 🎓
-          </h2>
-          <p className="text-gray-700 mb-4 text-lg">
-            🎯 Toutes les Étapes de votre Roadmap par Session !
-          </p>
-          <div className="overflow-x-auto">
-            <table className="min-w-full bg-white rounded-lg shadow-inner">
-              <thead className="bg-purple-100">
-                <tr>
-                  <th className="py-3 px-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider rounded-tl-lg">
-                    Action
-                  </th>
-                  <th className="py-3 px-4 text-center text-sm font-semibold text-gray-700 uppercase tracking-wider">
-                    Session 1 (27/10/2025 - 21/11/2025)
-                  </th>
-                  <th className="py-3 px-4 text-center text-sm font-semibold text-gray-700 uppercase tracking-wider rounded-tr-lg">
-                    Session 2 (13/01/2026 - 30/01/2026)
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {Object.keys(checklistState.academic).map((item, index) => (
-                  <tr key={index} className="hover:bg-gray-50">
-                    <td className="py-3 px-4 text-gray-800 text-base">{item}</td>
-                    <td className="py-3 px-4 text-center">
-                      <input
-                        type="checkbox"
-                        className="form-checkbox h-5 w-5 text-purple-600 rounded focus:ring-purple-500"
-                        checked={checklistState.academic[item]['Session 1']}
-                        onChange={() => handleCheckboxChange('academic', item, 'Session 1')}
-                      />
-                    </td>
-                    <td className="py-3 px-4 text-center">
-                      <input
-                        type="checkbox"
-                        className="form-checkbox h-5 w-5 text-purple-600 rounded focus:ring-purple-500"
-                        checked={checklistState.academic[item]['Session 2']}
-                        onChange={() => handleCheckboxChange('academic', item, 'Session 2')}
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+    <main class="max-w-6xl mx-auto">
+        <!-- Academic Checklist Section -->
+        <section class="mb-8 bg-white p-6 rounded-xl shadow-lg">
+            <h2 class="text-2xl sm:text-3xl font-bold text-indigo-700 mb-6 border-b-2 pb-2 border-indigo-200">
+                ✅ Checklist Académique : Ma Roadmap vers le Succès Vinci ! 🎓
+            </h2>
+            <p class="text-gray-700 mb-4 text-lg">
+                🎯 Toutes les Étapes de votre Roadmap par Session !
+            </p>
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white rounded-lg shadow-inner">
+                    <thead class="bg-purple-100">
+                        <tr>
+                            <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider rounded-tl-lg">
+                                Action
+                            </th>
+                            <th class="py-3 px-4 text-center text-sm font-semibold text-gray-700 uppercase tracking-wider">
+                                Session 1 (27/10/2025 - 21/11/2025)
+                            </th>
+                            <th class="py-3 px-4 text-center text-sm font-semibold text-gray-700 uppercase tracking-wider rounded-tr-lg">
+                                Session 2 (13/01/2026 - 30/01/2026)
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="academic-checklist-body" class="divide-y divide-gray-200">
+                        <!-- Content will be generated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
         </section>
 
-        {/* General Preparation Section */}
-        <section className="mb-8 bg-white p-6 rounded-xl shadow-lg">
-          <h2 className="text-2xl sm:text-3xl font-bold text-indigo-700 mb-6 border-b-2 pb-2 border-indigo-200">
-            🚀 Démarrage & Préparation Générale !
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {Object.keys(checklistState.general).map((item, index) => (
-              <div key={index} className="flex items-center bg-gray-50 p-3 rounded-lg shadow-sm">
-                <input
-                  type="checkbox"
-                  id={`general-${index}`}
-                  className="form-checkbox h-5 w-5 text-purple-600 rounded focus:ring-purple-500 mr-3"
-                  checked={checklistState.general[item]}
-                  onChange={() => handleCheckboxChange('general', item)}
-                />
-                <label htmlFor={`general-${index}`} className="text-gray-800 text-base cursor-pointer">
-                  {item}
-                </label>
-              </div>
-            ))}
-          </div>
+        <!-- General Preparation Section -->
+        <section class="mb-8 bg-white p-6 rounded-xl shadow-lg">
+            <h2 class="text-2xl sm:text-3xl font-bold text-indigo-700 mb-6 border-b-2 pb-2 border-indigo-200">
+                🚀 Démarrage & Préparation Générale !
+            </h2>
+            <div id="general-preparation-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Content will be generated by JavaScript -->
+            </div>
         </section>
 
-        {/* Skill Blocks Section */}
-        <section className="mb-8 bg-white p-6 rounded-xl shadow-lg">
-          <h2 className="text-2xl sm:text-3xl font-bold text-indigo-700 mb-6 border-b-2 pb-2 border-indigo-200">
-            🧠 Maîtrise des Blocs de Compétences !
-          </h2>
+        <!-- Skill Blocks Section -->
+        <section class="mb-8 bg-white p-6 rounded-xl shadow-lg">
+            <h2 class="text-2xl sm:text-3xl font-bold text-indigo-700 mb-6 border-b-2 pb-2 border-indigo-200">
+                🧠 Maîtrise des Blocs de Compétences !
+            </h2>
 
-          {['bloc1', 'bloc2', 'bloc3'].map((blockKey, blockIndex) => {
-            const progress = calculateBlockProgress(blockKey);
-            const blockTitle = `Bloc ${blockIndex + 1} : ${
-              blockKey === 'bloc1' ? 'Gérer la paie et les déclarations sociales' :
-              blockKey === 'bloc2' ? 'Assurer la Gestion administrative du personnel' :
-              'Conseiller et assister les décideurs et les collaborateurs'
-            }`;
+            <div id="skill-blocks-container">
+                <!-- Content will be generated by JavaScript -->
+            </div>
+        </section>
 
-            return (
-              <div key={blockKey} className="mb-8 p-4 bg-purple-50 rounded-xl shadow-inner">
-                <h3 className="text-xl sm:text-2xl font-semibold text-purple-800 mb-3">
-                  {blockTitle}
-                </h3>
-                <div className="w-full bg-gray-200 rounded-full h-4 mb-4">
-                  <div
-                    className="bg-gradient-to-r from-purple-500 to-indigo-500 h-4 rounded-full text-xs font-medium text-white text-center p-0.5 leading-none"
-                    style={{ width: `${progress}%` }}
-                  >
-                    {progress}% complété
-                  </div>
+        <!-- Well-being Checklist Section -->
+        <section class="mb-8 bg-white p-6 rounded-xl shadow-lg">
+            <h2 class="text-2xl sm:text-3xl font-bold text-indigo-700 mb-6 border-b-2 pb-2 border-indigo-200">
+                🌟 Checklist Bien-être & Équilibre : La Boss que vous êtes ! 💖
+            </h2>
+            <p class="text-gray-700 mb-4 text-lg">
+                Parce qu'une Boss de la Paie au top, c'est aussi une Boss épanouie et sereine ! ✨ Prenez soin de vous, c'est la clé de la réussite durable !
+            </p>
+
+            <div id="wellbeing-checklist-container">
+                <!-- Content will be generated by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Boss Tips Section -->
+        <section class="mb-8 bg-white p-6 rounded-xl shadow-lg">
+            <h2 class="text-2xl sm:text-3xl font-bold text-indigo-700 mb-6 border-b-2 pb-2 border-indigo-200">
+                💡 Conseils de Boss pour une Préparation au TOP du TOP ! 📈
+            </h2>
+
+            <div class="space-y-6">
+                <div class="bg-purple-50 p-4 rounded-xl shadow-inner border-l-4 border-purple-400">
+                    <h3 class="text-xl font-semibold text-purple-800 mb-2">
+                        🗓️ À 2 mois de l'examen : Le Grand Démarrage ! 🚀
+                    </h3>
+                    <p class="text-gray-700">
+                        C'est le moment de poser les fondations de votre succès ! 🧱 Plongez dans les bases de chaque module, organisez un emploi du temps de révision qui vous ressemble (et que vous allez ADORER suivre ! 😉). Identifiez vos zones de génie et celles qui demandent un petit coup de boost pour y mettre toute votre énergie ! 🎯
+                    </p>
                 </div>
 
-                {Object.keys(checklistState[blockKey]).map((moduleName, moduleIndex) => (
-                  <CollapsibleSection key={moduleIndex} title={moduleName}>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {Object.keys(checklistState[blockKey][moduleName]).map((item, itemIndex) => (
-                        <div key={itemIndex} className="flex items-center bg-gray-50 p-3 rounded-lg shadow-sm">
-                          <input
-                            type="checkbox"
-                            id={`${blockKey}-${moduleIndex}-${itemIndex}`}
-                            className="form-checkbox h-5 w-5 text-purple-600 rounded focus:ring-purple-500 mr-3"
-                            checked={checklistState[blockKey][moduleName][item]}
-                            onChange={() => handleCheckboxChange(blockKey, moduleName, item)}
-                          />
-                          <label htmlFor={`${blockKey}-${moduleIndex}-${itemIndex}`} className="text-gray-800 text-base cursor-pointer">
-                            {item}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                  </CollapsibleSection>
-                ))}
-              </div>
-            );
-          })}
+                <div class="bg-purple-50 p-4 rounded-xl shadow-inner border-l-4 border-purple-400">
+                    <h3 class="text-xl font-semibold text-purple-800 mb-2">
+                        🗓️ À 1 mois de l'examen : L'Accélération Finale ! ⚡
+                    </h3>
+                    <p class="text-gray-700">
+                        On passe à la vitesse supérieure ! 🚀 Intensifiez vos révisions, défiez-vous avec des annales d'examens et des exercices types. C'est le terrain de jeu idéal pour maîtriser votre temps et apprivoiser le stress comme une vraie Boss ! 👑 Pratiquez, pratiquez, pratiquez ! 🧠✨
+                    </p>
+                </div>
+
+                <div class="bg-purple-50 p-4 rounded-xl shadow-inner border-l-4 border-purple-400">
+                    <h3 class="text-xl font-semibold text-purple-800 mb-2">
+                        🗓️ À 1 semaine de l'examen : La Sérénité avant la Tempête ! 🧘‍♀️
+                    </h3>
+                    <p class="text-gray-700">
+                        Stop aux nouvelles notions ! 🚫 C'est la semaine de la consolidation et du bien-être. Assurez-vous que tout votre arsenal pour l'examen est prêt (stylos chanceux, chargeurs, etc. !). 🍀 Priorité absolue : un sommeil de champion(ne) et une alimentation qui vous donne des super-pouvoirs ! 🍎😴
+                    </p>
+                </div>
+
+                <div class="bg-purple-50 p-4 rounded-xl shadow-inner border-l-4 border-purple-400">
+                    <h3 class="text-xl font-semibold text-purple-800 mb-2">
+                        🗓️ 2 jours avant l'examen & le Jour J : La Victoire est en Vue ! 🏆
+                    </h3>
+                    <p class="text-gray-700 mb-2">
+                        ON ARRÊTE TOUT ! 🛑 Oui, oui, vous avez bien lu ! C'est le moment de décompresser et de recharger les batteries. Voici quelques astuces pour ces derniers jours cruciaux :
+                    </p>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1 ml-4">
+                        <li><span class="font-semibold">Bureau au top :</span> 🧹 Prépare ton espace de travail : dégagé, propre, avec juste l'essentiel. Mieux vaut la qualité que la quantité de bouquins !</li>
+                        <li><span class="font-semibold">Tech check :</span> 💻 Vérifie que ton ordi, tes écrans, et tous tes outils (téléphone, etc.) fonctionnent et sont bien chargés. Pense à un deuxième écran si tu en as besoin, on ne sait jamais !</li>
+                        <li><span class="font-semibold">Zone zéro dérangement :</span> 🤫 Assure-toi d'être dans un espace isolé. N'hésite pas à mettre un panneau "NE PAS DÉRANGER - RISQUE DE MORSURE" sur ta porte ! 😂</li>
+                        <li><span class="font-semibold">Ambiance parfaite :</span> 💡 Lumière agréable, bien aéré, ni trop chaud, ni trop froid. Tes lunettes/lentilles à portée de main !</li>
+                        <li><span class="font-semibold">Hydratation & énergie :</span> 💧 De quoi boire (beaucoup d'EAU, pas de sucre !) et grignoter sainement (pas un repas complet !). Respecte ta pause déjeuner si tu bosses toute la journée.</li>
+                        <li><span class="font-semibold">Stop quand il faut :</span> ⏰ Si après 3h-3h30 tu sens que tu en peux plus, STOP ! Ferme tout, prends une vraie pause (sieste, promenade), et reviens calmement. Pas de panique ! "À tout problème, il y a deux solutions : la bonne et la bonne. Si tu ne trouves pas de réponse à ta problématique, c'est qu'il n'y a pas de problème." 😉</li>
+                    </ul>
+                    <p class="text-gray-700 mt-4 mb-2 font-semibold">
+                        Le Jour J, soyez prête comme jamais :
+                    </p>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1 ml-4">
+                        <li><span class="font-semibold">Dernier check bureau :</span> ✅ Ton bureau est prêt depuis 2 jours, mais vérifie une dernière fois que personne n'y a touché (surtout si tu as des enfants !). Ta trousse, tes crayons, tout est là ?</li>
+                        <li><span class="font-semibold">Projection & Look de Boss :</span> 💼 Prépare tes vêtements la veille. Projette-toi : "Demain, je suis une gestionnaire de paie, je vais au bureau, je vais traiter ma paie." Habille-toi comme si tu allais vraiment travailler !</li>
+                        <li><span class="font-semibold">Bien-être matinal :</span> 🚿 Une bonne douche fraîche (si c'est l'été ou si tu aimes !), un super petit-déjeuner.</li>
+                        <li><span class="font-semibold">Mindset de champion(ne) :</span> 🧘‍♀️ Si tu aimes, fais un peu de méditation. Pense aux Quatre Accords Toltèques (et au cinquième !). Laisse ces pensées tourner en boucle, c'est reposant.</li>
+                        <li><span class="font-semibold">Amuse-toi !</span> 🎭 Prends ça comme un jeu, une pièce de théâtre où tu es la star. Éclate-toi, c'est comme ça qu'il faut prendre la vie ! Imagine que tu as des collègues, que tu es déjà à ton poste.</li>
+                    </ul>
+                    <p class="text-center text-lg font-bold text-purple-700 mt-4">
+                        Tu es une Payroll Boss Elite ! La confiance est ton super-pouvoir ! ✨
+                    </p>
+                </div>
+            </div>
         </section>
+    </main>
 
-        {/* Well-being Checklist Section */}
-        <section className="mb-8 bg-white p-6 rounded-xl shadow-lg">
-          <h2 className="text-2xl sm:text-3xl font-bold text-indigo-700 mb-6 border-b-2 pb-2 border-indigo-200">
-            🌟 Checklist Bien-être & Équilibre : La Boss que vous êtes ! 💖
-          </h2>
-          <p className="text-gray-700 mb-4 text-lg">
-            Parce qu'une Boss de la Paie au top, c'est aussi une Boss épanouie et sereine ! ✨ Prenez soin de vous, c'est la clé de la réussite durable !
-          </p>
-
-          {Object.keys(checklistState.wellbeing).map((category, categoryIndex) => (
-            <CollapsibleSection key={categoryIndex} title={category}>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {Object.keys(checklistState.wellbeing[category]).map((item, itemIndex) => (
-                  <div key={itemIndex} className="flex items-center bg-gray-50 p-3 rounded-lg shadow-sm">
-                    <input
-                      type="checkbox"
-                      id={`wellbeing-${categoryIndex}-${itemIndex}`}
-                      className="form-checkbox h-5 w-5 text-purple-600 rounded focus:ring-purple-500 mr-3"
-                      checked={checklistState.wellbeing[category][item]}
-                      onChange={() => handleCheckboxChange('wellbeing', category, item)}
-                    />
-                    <label htmlFor={`wellbeing-${categoryIndex}-${itemIndex}`} className="text-gray-800 text-base cursor-pointer">
-                      {item}
-                    </label>
-                  </div>
-                ))}
-              </div>
-            </CollapsibleSection>
-          ))}
-        </section>
-
-        {/* Boss Tips Section */}
-        <section className="mb-8 bg-white p-6 rounded-xl shadow-lg">
-          <h2 className="text-2xl sm:text-3xl font-bold text-indigo-700 mb-6 border-b-2 pb-2 border-indigo-200">
-            💡 Conseils de Boss pour une Préparation au TOP du TOP ! 📈
-          </h2>
-
-          <div className="space-y-6">
-            <div className="bg-purple-50 p-4 rounded-xl shadow-inner border-l-4 border-purple-400">
-              <h3 className="text-xl font-semibold text-purple-800 mb-2">
-                🗓️ À 2 mois de l'examen : Le Grand Démarrage ! 🚀
-              </h3>
-              <p className="text-gray-700">
-                C'est le moment de poser les fondations de votre succès ! 🧱 Plongez dans les bases de chaque module, organisez un emploi du temps de révision qui vous ressemble (et que vous allez ADORER suivre ! 😉). Identifiez vos zones de génie et celles qui demandent un petit coup de boost pour y mettre toute votre énergie ! 🎯
-              </p>
-            </div>
-
-            <div className="bg-purple-50 p-4 rounded-xl shadow-inner border-l-4 border-purple-400">
-              <h3 className="text-xl font-semibold text-purple-800 mb-2">
-                🗓️ À 1 mois de l'examen : L'Accélération Finale ! ⚡
-              </h3>
-              <p className="text-gray-700">
-                On passe à la vitesse supérieure ! 🚀 Intensifiez vos révisions, défiez-vous avec des annales d'examens et des exercices types. C'est le terrain de jeu idéal pour maîtriser votre temps et apprivoiser le stress comme une vraie Boss ! 👑 Pratiquez, pratiquez, pratiquez ! 🧠✨
-              </p>
-            </div>
-
-            <div className="bg-purple-50 p-4 rounded-xl shadow-inner border-l-4 border-purple-400">
-              <h3 className="text-xl font-semibold text-purple-800 mb-2">
-                🗓️ À 1 semaine de l'examen : La Sérénité avant la Tempête ! 🧘‍♀️
-              </h3>
-              <p className="text-gray-700">
-                Stop aux nouvelles notions ! 🚫 C'est la semaine de la consolidation et du bien-être. Assurez-vous que tout votre arsenal pour l'examen est prêt (stylos chanceux, chargeurs, etc. !). 🍀 Priorité absolue : un sommeil de champion(ne) et une alimentation qui vous donne des super-pouvoirs ! 🍎😴
-              </p>
-            </div>
-
-            <div className="bg-purple-50 p-4 rounded-xl shadow-inner border-l-4 border-purple-400">
-              <h3 className="text-xl font-semibold text-purple-800 mb-2">
-                🗓️ 2 jours avant l'examen & le Jour J : La Victoire est en Vue ! 🏆
-              </h3>
-              <p className="text-gray-700 mb-2">
-                ON ARRÊTE TOUT ! 🛑 Oui, oui, vous avez bien lu ! C'est le moment de décompresser et de recharger les batteries. Voici quelques astuces pour ces derniers jours cruciaux :
-              </p>
-              <ul className="list-disc list-inside text-gray-700 space-y-1 ml-4">
-                <li><span className="font-semibold">Bureau au top :</span> 🧹 Prépare ton espace de travail : dégagé, propre, avec juste l'essentiel. Mieux vaut la qualité que la quantité de bouquins !</li>
-                <li><span className="font-semibold">Tech check :</span> 💻 Vérifie que ton ordi, tes écrans, et tous tes outils (téléphone, etc.) fonctionnent et sont bien chargés. Pense à un deuxième écran si tu en as besoin, on ne sait jamais !</li>
-                <li><span className="font-semibold">Zone zéro dérangement :</span> 🤫 Assure-toi d'être dans un espace isolé. N'hésite pas à mettre un panneau "NE PAS DÉRANGER - RISQUE DE MORSURE" sur ta porte ! 😂</li>
-                <li><span className="font-semibold">Ambiance parfaite :</span> 💡 Lumière agréable, bien aéré, ni trop chaud, ni trop froid. Tes lunettes/lentilles à portée de main !</li>
-                <li><span className="font-semibold">Hydratation & énergie :</span> 💧 De quoi boire (beaucoup d'EAU, pas de sucre !) et grignoter sainement (pas un repas complet !). Respecte ta pause déjeuner si tu bosses toute la journée.</li>
-                <li><span className="font-semibold">Stop quand il faut :</span> ⏰ Si après 3h-3h30 tu sens que tu en peux plus, STOP ! Ferme tout, prends une vraie pause (sieste, promenade), et reviens calmement. Pas de panique ! "À tout problème, il y a deux solutions : la bonne et la bonne. Si tu ne trouves pas de réponse à ta problématique, c'est qu'il n'y a pas de problème." 😉</li>
-              </ul>
-              <p className="text-gray-700 mt-4 mb-2 font-semibold">
-                Le Jour J, soyez prête comme jamais :
-              </p>
-              <ul className="list-disc list-inside text-gray-700 space-y-1 ml-4">
-                <li><span className="font-semibold">Dernier check bureau :</span> ✅ Ton bureau est prêt depuis 2 jours, mais vérifie une dernière fois que personne n'y a touché (surtout si tu as des enfants !). Ta trousse, tes crayons, tout est là ?</li>
-                <li><span className="font-semibold">Projection & Look de Boss :</span> 💼 Prépare tes vêtements la veille. Projette-toi : "Demain, je suis une gestionnaire de paie, je vais au bureau, je vais traiter ma paie." Habille-toi comme si tu allais vraiment travailler !</li>
-                <li><span className="font-semibold">Bien-être matinal :</span> 🚿 Une bonne douche fraîche (si c'est l'été ou si tu aimes !), un super petit-déjeuner.</li>
-                <li><span className="font-semibold">Mindset de champion(ne) :</span> 🧘‍♀️ Si tu aimes, fais un peu de méditation. Pense aux Quatre Accords Toltèques (et au cinquième !). Laisse ces pensées tourner en boucle, c'est reposant.</li>
-                <li><span className="font-semibold">Amuse-toi !</span> 🎭 Prends ça comme un jeu, une pièce de théâtre où tu es la star. Éclate-toi, c'est comme ça qu'il faut prendre la vie ! Imagine que tu as des collègues, que tu es déjà à ton poste.</li>
-              </ul>
-              <p className="text-center text-lg font-bold text-purple-700 mt-4">
-                Tu es une Payroll Boss Elite ! La confiance est ton super-pouvoir ! ✨
-              </p>
-            </div>
-          </div>
-        </section>
-      </main>
-
-      {/* Footer Section */}
-      <footer className="text-center mt-8 bg-white p-6 rounded-xl shadow-lg">
+    <!-- Footer Section -->
+    <footer class="text-center mt-8 bg-white p-6 rounded-xl shadow-lg">
         <button
-          onClick={() => window.print()}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-full shadow-md transition duration-300 ease-in-out transform hover:scale-105 mb-4"
+            onclick="window.print()"
+            class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-full shadow-md transition duration-300 ease-in-out transform hover:scale-105 mb-4"
         >
-          🖨️ Imprimer ma Checklist
+            🖨️ Imprimer ma Checklist
         </button>
-        <p className="text-gray-700 mb-4">
-          Ou rejoignez-nous directement pour plus de soutien :
+        <p class="text-gray-700 mb-4">
+            Ou rejoignez-nous directement pour plus de soutien :
         </p>
-        <div className="flex flex-wrap justify-center gap-4 text-sm sm:text-base">
-          <a
-            href="https://discord.com/" // Placeholder link
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-full shadow-md transition duration-300 ease-in-out transform hover:scale-105"
-          >
-            Discord : 🔥Payroll Boss Elite Club 👑| Infos & Actus
-          </a>
-          <a
-            href="https://wa.me/" // Placeholder link
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-full shadow-md transition duration-300 ease-in-out transform hover:scale-105"
-          >
-            WhatsApp : 🔥 Payroll Boss Elite Club : Le Hub Paie & Progrès 📈
-          </a>
+        <div class="flex flex-wrap justify-center gap-4 text-sm sm:text-base">
+            <a
+                href="https://discord.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-full shadow-md transition duration-300 ease-in-out transform hover:scale-105"
+            >
+                Discord : 🔥Payroll Boss Elite Club 👑| Infos & Actus
+            </a>
+            <a
+                href="https://wa.me/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-full shadow-md transition duration-300 ease-in-out transform hover:scale-105"
+            >
+                WhatsApp : 🔥 Payroll Boss Elite Club : Le Hub Paie & Progrès 📈
+            </a>
         </div>
-      </footer>
-    </div>
-  );
-};
+    </footer>
 
-export default App;
+    <script>
+        // Initial state for all checklist items
+        // This structure allows easy tracking of each checkbox and its nested status
+        let checklistState = {};
+
+        const defaultChecklistState = {
+            // Academic Checklist
+            academic: {
+                'Préparer son matériel d\'examen (stylos, chargeurs, etc.)': { 'Session 1': false, 'Session 2': false },
+                'Vérifier les modalités spécifiques des épreuves (asynchrone, non-chronométré)': { 'Session 1': false, 'Session 2': false },
+                'S\'assurer de l\'accès à la copie à rendre (cliquer "activer les modifications")': { 'Session 1': false, 'Session 2': false },
+                'Réaliser les épreuves écrites/vidéo': { 'Session 1': false, 'Session 2': false },
+                'Gérer la période "Exam Week / Sprint Examen" (révisions ciblées, questions-réponses)': { 'Session 1': false, 'Session 2': false },
+                'Consulter les Lives Sprint Examen': { 'Session 1': false, 'Session 2': false },
+                'Poser les dernières questions sur le forum/aux responsables pédagogiques': { 'Session 1': false, 'Session 2': false },
+                'Recevoir les résultats de la session': { 'Session 1': false, 'Session 2': false },
+                'Analyser ses résultats et identifier les blocs/épreuves validés': { 'Session 1': false, 'Session 2': false },
+                'Recevoir les bulletins de notes provisoires': { 'Session 1': false, 'Session 2': false },
+                'Confirmer la validation des compétences acquises': { 'Session 1': false, 'Session 2': false },
+                'Recevoir les Parchemins / Attestation de blocs/bulletins finaux par mail': { 'Session 1': false, 'Session 2': false },
+                'Célébrer sa réussite et se projeter vers la suite !': { 'Session 1': false, 'Session 2': false },
+            },
+            // General Preparation
+            general: {
+                'Vérifier son Profil': false,
+                'Réaliser les 3 Certificats Studi (QCM par bloc)': false,
+                'Consulter les différents guides (Formation, Blocs)': false,
+                'S\'assurer d\'avoir bien abordé la formation (guides, lives de bienvenue et de rentrée)': false,
+                'Réaliser toutes les évaluations d\'entraînement (fortement recommandé)': false,
+                'Poser ses questions sur le forum': false,
+            },
+            // Skill Blocks
+            bloc1: {
+                'Module 1 : Paramétrer le logiciel de paie': {
+                    'Télécharger le logiciel': false,
+                    'La base de données 2019': false,
+                    'Lancement de l\'application': false,
+                    'Découverte de l\'application': false,
+                    'La création d\'une société': false,
+                    'Le paramétrage d\'une société': false,
+                    'Le paramétrage de l\'établissement': false,
+                    'La création des fiches salariés': false,
+                    'Le paramétrage des bulletins modèles': false,
+                    'Le paramétrage du salaire brut': false,
+                    'Le paramétrage des cotisations sociales': false,
+                    'Le paramétrage des salaires nets': false,
+                    'Les déclarations sociales': false,
+                    'Questions fréquentes': false,
+                    'L\'Accès à d\'autres logiciels de paie': false,
+                    'Synthèse et application : Paramétrer le logiciel de paie': false,
+                },
+                'Module 2 : Collecter et traiter les variables de paie': {
+                    'Comment et pourquoi se former à la collecte et au calcul des variables de paie': false,
+                    'Présentation de la Gestion de la Paie': false,
+                    'La gestion de la paie (pour débutants)': false,
+                    'Le temps de travail': false,
+                    'La rémunération': false,
+                    'La présentation et la méthodologie du bulletin de salaire': false,
+                    'Le règlement du salaire': false,
+                    'Application : Collecter et traiter les variables de paie': false,
+                },
+                'Module 3 : Gérer la rémunération': {
+                    'La présentation et la méthodologie du bulletin de salaire': false,
+                    'Le règlement du salaire': false,
+                    'La rémunération brute : l\'acquisition et la prise de congés payés': false,
+                    'La rémunération brute : l’indemnité de congés payés': false,
+                    'La rémunération brute : les heures complémentaires': false,
+                    'Présentation de la rémunération brute et de la durée légale du travail': false,
+                    'Présentation de la rémunération brute et le temps de travail effectif': false,
+                    'La rémunération brute : le salaire de base, les primes et la retenue pour absence': false,
+                    'La rémunération brute : les heures supplémentaires et le dimanche travaillé': false,
+                    'La rémunération brute : les heures supplémentaires': false,
+                    'La rémunération brute : les avantages en nature': false,
+                    'La rémunération brute : l’arrêt de travail, la retenue pour absence, la subrogation et les IJSS': false,
+                    'La rémunération brute : l’arrêt de travail et le complément employeur': false,
+                    'La grève et le lock-out': false,
+                },
+                'Module 4 : Traiter les bulletins de salaires': {
+                    'Le bulletin de salaire d\'un dirigeant sans contrat de travail': false,
+                    'L\'activité partielle': false,
+                    'Le bulletin de salaire VRP': false,
+                    'Le bulletin de salaire du BTP (ouvrier)': false,
+                    'Le bulletin de salaire du BTP (ETAM et Cadres)': false,
+                    'Le bulletin de salaire Apprenti': false,
+                    'La gratification stagiaire': false,
+                    'Synthèse et application : Collecter et traiter les variables de paie': false,
+                },
+                'Module 5 : Contrôler et éditer les Bulletins de paie': {
+                    'Les diverses cotisations sociales': false,
+                    'Les bases de calcul des cotisations sociales': false,
+                    'Les réductions de cotisations sociales': false,
+                    'Les régularisations de cotisations sociales': false,
+                    'Le salaire net et le salaire imposable': false,
+                    'Les impacts du prélèvement à la source': false,
+                    'Le salaire net à payer et le net social': false,
+                    'Synthèse et application : Contrôler et éditer les Bulletins de paie': false,
+                },
+                'Module 6 : Gérer les déclarations sociales': {
+                    'Comment et pourquoi se former à l\'édition et au contrôle des déclarations sociales': false,
+                    'Le livre de paie': false,
+                    'Les modalités déclaratives': false,
+                    'Le contenu des déclarations sociales : la réduction générale et TEPA': false,
+                    'Le contenu des déclarations sociales : les cotisations, le PAS et les contributions sociales': false,
+                    'La gestion des arrêts de travail en paie': false,
+                    'La taxe d\'apprentissage': false,
+                    'La gestion de la déclaration d\'emploi des travailleurs handicapés': false,
+                    'Les taxes sur les salaires': false,
+                    'La participation à la formation continue': false,
+                    'L\'investissement obligatoire dans la construction': false,
+                    'Synthèse et application : Gérer les déclarations sociales': false,
+                },
+                'Module 7 : Analyser les écarts entre la paie et la comptabilité': {
+                    'Les enjeux de l\'identification et l\'analyse des écarts entre la paie et la comptabilité': false,
+                    'La présentation du plan comptable : généralités': false,
+                    'Le grand livre comptable et les données paie': false,
+                    'Les opérations comptables issues de la paie': false,
+                    'Comptabilisation de la paie': false,
+                    'L\'analyse des causes': false,
+                    'L\'analyse des risques': false,
+                    'Les opérations de régularisations': false,
+                    'Synthèse et application : Analyser les écarts entre la paie et la comptabilité': false,
+                },
+            },
+            bloc2: {
+                'Module 1 : Etablir les contrats de travail': {
+                    'La notion de droit du travail': false,
+                    'La formation du contrat de travail': false,
+                    'Maîtriser la rédaction d’un contrat de travail': false,
+                    'L’exécution du contrat de travail': false,
+                    'Le contrat de travail à durée indéterminée': false,
+                    'Le CDD et le contrat de travail temporaire': false,
+                    'Le contrat de travail à temps partiel': false,
+                    'Les contrats de formation': false,
+                    'La rédaction du contrat de travail': false,
+                    'Synthèse et application : Etablir les contrats de travail': false,
+                },
+                'Module 2 : Traiter les entrées et sorties des salariés': {
+                    'Comment et pourquoi se former à gestion des parcours salariés': false,
+                    'Le recrutement': false,
+                    'Les formalités administratives d\'embauche': false,
+                    'La suspension du contrat de travail': false,
+                    'L\'édition des documents de suspension du contrat': false,
+                    'La rupture du contrat de travail : introduction': false,
+                    'Le licenciement': false,
+                    'Les autres modes de rupture du contrat de travail': false,
+                    'Les fins de contrat : cas du CDD, ICP, Indemnité RTT, ...': false,
+                    'Les fins de contrat : rupture conventionnelle, départ et mise à la retraite': false,
+                    'Les formalités de rupture du contrat de travail': false,
+                    'L\'édition des documents de fin de contrat': false,
+                    'Synthèse et application : Traiter les entrées et sorties des salariés': false,
+                },
+                'Module 3 : Gérer les dossiers du personnel': {
+                    'La stratégie globale de digitalisation de l\'entreprise': false,
+                    'La transition numérique': false,
+                    'La digitalisation de la fonction RH': false,
+                    'La digitalisation des dossiers du personnel': false,
+                    'Le coffre fort numérique': false,
+                    'RGPD : Règlement Général de Protection des Données': false,
+                    'Synthèse et application : Gérer les dossiers du personnel': false,
+                },
+                'Module 4 : Communiquer avec les partenaires externes': {
+                    'Les partenaires externes du service paie': false,
+                    'Les outils de communication du service paie avec ses partenaires': false,
+                    'Les contrôles de l’application du droit du travail': false,
+                    'Le contentieux de la relation de travail': false,
+                    'Les procédures de règlement des conflits collectifs': false,
+                    'Les contrôles et le contentieux social': false,
+                    'Le rôle et le contrôle de l\'URSSAF': false,
+                    'Synthèse et application : Communiquer avec les partenaires externes': false,
+                },
+            },
+            bloc3: {
+                'Module 1 : Réaliser une veille juridique': {
+                    'Le conseil et l\'assistance à la direction et aux collaborateurs': false,
+                    'La démarche de veille': false,
+                    'La veille juridique': false,
+                    'Les différents types de veille': false,
+                    'La notion de droit du travail': false,
+                    'Les sources professionnelles du droit du travail': false,
+                    'La hiérarchie des sources du droit du travail': false,
+                    'La protection sociale, généralités': false,
+                    'La formation professionnelle': false,
+                    'Les pouvoirs de l’employeur et la protection de la santé des salariés': false,
+                    'Comment effectuer une veille active': false,
+                    'Le support de communication de la veille juridique': false,
+                    'Synthèse et application : Réaliser une veille juridique': false,
+                },
+                'Module 2 : Diagnostiquer le conformité de la paie': {
+                    'L\'analyse documentaire': false,
+                    'La collecte des informations auprès des décideurs': false,
+                    'L\'identification des écarts': false,
+                    'L\'identification des risques encourus': false,
+                    'Les actions correctrices': false,
+                    'Le rapport de diagnostic': false,
+                    'Synthèse et application : Diagnostiquer le conformité de la paie': false,
+                },
+                'Module 3 : Communiquer avec les collaborateurs et managers': {
+                    'Les fondamentaux de la communication professionnelle': false,
+                    'L\'écoute active': false,
+                    'La communication non verbale': false,
+                    'Les fondamentaux de la prise de parole en public': false,
+                    'Les réunions à distances': false,
+                    'Rédiger une réponse professionnelle': false,
+                    'Les fondamentaux de la sécurité sociale': false,
+                    'L’assurance maladie du régime général': false,
+                    'L’assurance vieillesse du régime général': false,
+                    'La protection contre le chômage': false,
+                    'Synthèse et application : Communiquer avec les collaborateurs et managers': false,
+                },
+                'Module 4 : Concevoir des supports de reporting et d’aide à la décision': {
+                    'Les fondamentaux d\'excel': false,
+                    'Le calcul des effectifs': false,
+                    'Le bilan social': false,
+                    'Le recueil préalable des informations RH': false,
+                    'L\'édition des tableaux de bord sociaux': false,
+                    'L\'analyse et le suivi des tableaux de bord sociaux': false,
+                    'L\'analyse et la prévision de la masse salariale': false,
+                    'L’association des salariés aux performances de l’entreprise, généralités': false,
+                    'La participation': false,
+                    'L\'intéressement': false,
+                    'Les plans d’épargne salariale': false,
+                    'Synthèse et application : Concevoir des supports de reporting et d’aide à la décision': false,
+                },
+                'Module 5 : Assister les utilisateurs du SIRH': {
+                    'L\'utilisation d\'un SIRH': false,
+                    'Les enjeux d\'un SIRH': false,
+                    'Les fonctionnalités du SIRH': false,
+                    'La réglementation inhérente aux SIRH': false,
+                    'Introduction à la notion de base de données': false,
+                    'L\'exploitation des bases de données': false,
+                    'L\'utilisation du SIRH au quotidien par le collaborateur': false,
+                    'Proder Talentsoft ou cornerstone': false,
+                    'La rédaction des courriers à destination du personnel': false,
+                    'Synthèse et application : Assister les utilisateurs du SIRH': false,
+                },
+            },
+            // Well-being Checklist
+            wellbeing: {
+                'Moi, ma bulle de bonheur !': {
+                    'Prendre un moment pour soi (soin, lecture, méditation, un bon bain moussant !)': false,
+                    'Faire une activité physique légère (promenade, yoga, danse endiablée !)': false,
+                    'S\'accorder une pause "plaisir" (film, musique, hobby, ou juste ne rien faire !)': false,
+                    'Déconnecter des écrans au moins 1h avant de dormir (bye bye le téléphone !)': false,
+                    'Faire des exercices de respiration ou de pleine conscience (pour une zénitude absolue !)': false,
+                },
+                'Mon corps, mon temple !': {
+                    'Préparer des repas équilibrés et ultra-gourmands pour la semaine (miam !)': false,
+                    'Dormir au moins 7-8 heures par nuit (le sommeil, c\'est sacré !)': false,
+                    'Boire suffisamment d\'eau tout au long de la journée (hydratation = super-pouvoirs !)': false,
+                },
+                'Ma tribu, ma force !': {
+                    'Passer du temps de qualité avec la famille/les enfants (rires garantis !)': false,
+                    'Organiser une sortie ou un appel avec des amis/partenaire (partage et bonne humeur !)': false,
+                },
+            },
+        };
+
+        // Function to load state from localStorage
+        function loadChecklistState() {
+            const savedState = localStorage.getItem('payrollChecklistState');
+            if (savedState) {
+                checklistState = JSON.parse(savedState);
+            } else {
+                checklistState = JSON.parse(JSON.stringify(defaultChecklistState)); // Deep copy
+            }
+        }
+
+        // Function to save state to localStorage
+        function saveChecklistState() {
+            localStorage.setItem('payrollChecklistState', JSON.stringify(checklistState));
+        }
+
+        // Function to render the checklist
+        function renderChecklist() {
+            // Render Academic Checklist
+            const academicBody = document.getElementById('academic-checklist-body');
+            academicBody.innerHTML = ''; // Clear previous content
+            for (const item in checklistState.academic) {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50';
+                row.innerHTML = `
+                    <td class="py-3 px-4 text-gray-800 text-base">${item}</td>
+                    <td class="py-3 px-4 text-center">
+                        <input type="checkbox" class="form-checkbox h-5 w-5 text-purple-600 rounded focus:ring-purple-500"
+                               data-section="academic" data-item="${item}" data-subitem="Session 1"
+                               ${checklistState.academic[item]['Session 1'] ? 'checked' : ''}>
+                    </td>
+                    <td class="py-3 px-4 text-center">
+                        <input type="checkbox" class="form-checkbox h-5 w-5 text-purple-600 rounded focus:ring-purple-500"
+                               data-section="academic" data-item="${item}" data-subitem="Session 2"
+                               ${checklistState.academic[item]['Session 2'] ? 'checked' : ''}>
+                    </td>
+                `;
+                academicBody.appendChild(row);
+            }
+
+            // Render General Preparation
+            const generalList = document.getElementById('general-preparation-list');
+            generalList.innerHTML = ''; // Clear previous content
+            for (const item in checklistState.general) {
+                const div = document.createElement('div');
+                div.className = 'flex items-center bg-gray-50 p-3 rounded-lg shadow-sm';
+                div.innerHTML = `
+                    <input type="checkbox" id="general-${item.replace(/\s/g, '-')}" class="form-checkbox h-5 w-5 text-purple-600 rounded focus:ring-purple-500 mr-3"
+                           data-section="general" data-item="${item}"
+                           ${checklistState.general[item] ? 'checked' : ''}>
+                    <label for="general-${item.replace(/\s/g, '-')}" class="text-gray-800 text-base cursor-pointer">
+                        ${item}
+                    </label>
+                `;
+                generalList.appendChild(div);
+            }
+
+            // Render Skill Blocks
+            const skillBlocksContainer = document.getElementById('skill-blocks-container');
+            skillBlocksContainer.innerHTML = ''; // Clear previous content
+            ['bloc1', 'bloc2', 'bloc3'].forEach((blockKey, blockIndex) => {
+                const progress = calculateBlockProgress(blockKey);
+                const blockTitle = `Bloc ${blockIndex + 1} : ${
+                    blockKey === 'bloc1' ? 'Gérer la paie et les déclarations sociales' :
+                    blockKey === 'bloc2' ? 'Assurer la Gestion administrative du personnel' :
+                    'Conseiller et assister les décideurs et les collaborateurs'
+                }`;
+
+                const blockDiv = document.createElement('div');
+                blockDiv.className = 'mb-8 p-4 bg-purple-50 rounded-xl shadow-inner';
+                blockDiv.innerHTML = `
+                    <h3 class="text-xl sm:text-2xl font-semibold text-purple-800 mb-3">
+                        ${blockTitle}
+                    </h3>
+                    <div class="w-full bg-gray-200 rounded-full h-4 mb-4">
+                        <div class="bg-gradient-to-r from-purple-500 to-indigo-500 h-4 rounded-full text-xs font-medium text-white text-center p-0.5 leading-none"
+                             style="width: ${progress}%">
+                            ${progress}% complété
+                        </div>
+                    </div>
+                `;
+                skillBlocksContainer.appendChild(blockDiv);
+
+                for (const moduleName in checklistState[blockKey]) {
+                    const moduleDiv = document.createElement('div');
+                    moduleDiv.className = 'mb-4 bg-white p-4 rounded-xl shadow-md';
+                    moduleDiv.innerHTML = `
+                        <button class="w-full text-left font-semibold text-lg flex justify-between items-center text-gray-800 focus:outline-none collapsible-btn">
+                            ${moduleName}
+                            <svg class="w-5 h-5 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="collapsible-content hidden mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <!-- Items will be added here by JS -->
+                        </div>
+                    `;
+                    blockDiv.appendChild(moduleDiv);
+
+                    const contentDiv = moduleDiv.querySelector('.collapsible-content');
+                    for (const item in checklistState[blockKey][moduleName]) {
+                        const itemDiv = document.createElement('div');
+                        itemDiv.className = 'flex items-center bg-gray-50 p-3 rounded-lg shadow-sm';
+                        itemDiv.innerHTML = `
+                            <input type="checkbox" id="${blockKey}-${moduleName.replace(/\s/g, '-')}-${item.replace(/\s/g, '-')}" class="form-checkbox h-5 w-5 text-purple-600 rounded focus:ring-purple-500 mr-3"
+                                   data-section="${blockKey}" data-module="${moduleName}" data-item="${item}"
+                                   ${checklistState[blockKey][moduleName][item] ? 'checked' : ''}>
+                            <label for="${blockKey}-${moduleName.replace(/\s/g, '-')}-${item.replace(/\s/g, '-')}" class="text-gray-800 text-base cursor-pointer">
+                                ${item}
+                            </label>
+                        `;
+                        contentDiv.appendChild(itemDiv);
+                    }
+                }
+            });
+
+            // Render Well-being Checklist
+            const wellbeingContainer = document.getElementById('wellbeing-checklist-container');
+            wellbeingContainer.innerHTML = ''; // Clear previous content
+            for (const category in checklistState.wellbeing) {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'mb-4 bg-white p-4 rounded-xl shadow-md';
+                categoryDiv.innerHTML = `
+                    <button class="w-full text-left font-semibold text-lg flex justify-between items-center text-gray-800 focus:outline-none collapsible-btn">
+                        ${category}
+                        <svg class="w-5 h-5 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="collapsible-content hidden mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <!-- Items will be added here by JS -->
+                    </div>
+                `;
+                wellbeingContainer.appendChild(categoryDiv);
+
+                const contentDiv = categoryDiv.querySelector('.collapsible-content');
+                for (const item in checklistState.wellbeing[category]) {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'flex items-center bg-gray-50 p-3 rounded-lg shadow-sm';
+                    itemDiv.innerHTML = `
+                        <input type="checkbox" id="wellbeing-${category.replace(/\s/g, '-')}-${item.replace(/\s/g, '-')}" class="form-checkbox h-5 w-5 text-purple-600 rounded focus:ring-purple-500 mr-3"
+                               data-section="wellbeing" data-category="${category}" data-item="${item}"
+                               ${checklistState.wellbeing[category][item] ? 'checked' : ''}>
+                        <label for="wellbeing-${category.replace(/\s/g, '-')}-${item.replace(/\s/g, '-')}" class="text-gray-800 text-base cursor-pointer">
+                            ${item}
+                        </label>
+                    `;
+                    contentDiv.appendChild(itemDiv);
+                }
+            }
+
+            // Attach event listeners after rendering
+            attachEventListeners();
+        }
+
+        // Function to calculate progress for a given block
+        function calculateBlockProgress(blockKey) {
+            const block = checklistState[blockKey];
+            if (!block) return 0;
+
+            let totalItems = 0;
+            let completedItems = 0;
+
+            for (const moduleName in block) {
+                const moduleItems = block[moduleName];
+                for (const itemName in moduleItems) {
+                    totalItems++;
+                    if (moduleItems[itemName]) {
+                        completedItems++;
+                    }
+                }
+            }
+            return totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
+        }
+
+        // Function to handle checkbox changes
+        function handleCheckboxChange(event) {
+            const checkbox = event.target;
+            const section = checkbox.dataset.section;
+            const item = checkbox.dataset.item;
+            const subItem = checkbox.dataset.subitem;
+            const module = checkbox.dataset.module;
+            const category = checkbox.dataset.category;
+
+            if (section === 'academic') {
+                checklistState[section][item][subItem] = checkbox.checked;
+            } else if (section === 'general') {
+                checklistState[section][item] = checkbox.checked;
+            } else if (section.startsWith('bloc')) {
+                checklistState[section][module][item] = checkbox.checked;
+            } else if (section === 'wellbeing') {
+                checklistState[section][category][item] = checkbox.checked;
+            }
+
+            saveChecklistState();
+            renderChecklist(); // Re-render to update progress bars and state
+        }
+
+        // Function to attach event listeners to checkboxes and collapsible buttons
+        function attachEventListeners() {
+            // Checkboxes
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.removeEventListener('change', handleCheckboxChange); // Prevent duplicate listeners
+                checkbox.addEventListener('change', handleCheckboxChange);
+            });
+
+            // Collapsible buttons
+            document.querySelectorAll('.collapsible-btn').forEach(button => {
+                button.removeEventListener('click', toggleCollapsible); // Prevent duplicate listeners
+                button.addEventListener('click', toggleCollapsible);
+            });
+        }
+
+        // Function to toggle collapsible sections
+        function toggleCollapsible(event) {
+            const button = event.currentTarget;
+            const content = button.nextElementSibling; // The div with class 'collapsible-content'
+            const svg = button.querySelector('svg');
+
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                svg.classList.add('rotate-180');
+            } else {
+                content.classList.add('hidden');
+                svg.classList.remove('rotate-180');
+            }
+        }
+
+        // Countdown logic
+        function updateCountdown() {
+            const targetDate = new Date('2025-12-01T00:00:00'); // Target date for VINCI promotion
+            const now = new Date();
+            const difference = targetDate.getTime() - now.getTime();
+            const days = Math.ceil(difference / (1000 * 60 * 60 * 24));
+            document.getElementById('days-remaining').textContent = days > 0 ? days : 0;
+        }
+
+        // Initial load and setup
+        document.addEventListener('DOMContentLoaded', () => {
+            loadChecklistState();
+            renderChecklist();
+            updateCountdown();
+            setInterval(updateCountdown, 1000 * 60 * 60 * 24); // Update daily
+        });
+    </script>
+</body>
+</html>
